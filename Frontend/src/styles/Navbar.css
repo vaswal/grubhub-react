@@ -1,0 +1,94 @@
+.row {
+    text-align: left;
+    width: 100%;
+    display: block;
+}
+
+.half-row {
+    display: inline-block;
+    width: 48%;
+    padding-top: 5%;
+    padding-left: 15%;
+    float: right;
+}
+
+.search-img {
+    text-align: center;
+    margin: auto;
+    width: 100%;
+}
+
+.account-logo-container {
+    text-align: center;
+}
+
+.account-logo {
+    padding-top: 20px;
+    width: 170px;
+    margin: auto;
+    text-align: center;
+}
+
+.quora-logo-account {
+    padding-top: 20px;
+    padding-left: 50%;
+    width: 70%;
+    text-align: center;
+}
+
+.clear {
+    clear: both;
+}
+
+.bg {
+    background-image: url('../images/burger.jpg');
+    background-repeat: no-repeat;
+    background-size: 50% 100%;
+    z-index: -200;
+    position: absolute;
+}
+
+.text {
+    float: left;
+    height: 200px;
+    width: 1500px;
+    background-color: green;
+}
+
+.signin-btn {
+    background: #1273de;
+    color: #fff;
+    border-radius: 3px;
+    outline: none;
+    font-weight: bold;
+    font-size: 12px;
+    border: 1px solid #3e78ad;
+    margin-left: 650%;
+    margin-top: 100%;
+    cursor: pointer;
+    width: 274px;
+
+}
+
+.account-btn {
+    background: #1273de;
+    color: #fff;
+    border-radius: 3px;
+    outline: none;
+    font-weight: bold;
+    font-size: 12px;
+    border: 1px solid #3e78ad;
+    margin-left: 1px;
+    margin-top: 10px;
+    cursor: pointer;
+    width: 274px;
+}
+
+.checkbox-text {
+    margin-left: 5%;
+    padding-left: 5%;
+}
+
+.label {
+    margin-left: 20px;
+}
