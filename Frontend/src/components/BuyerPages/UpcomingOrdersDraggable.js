@@ -5,42 +5,25 @@ import axios from 'axios';
 import BootstrapTable from "react-bootstrap-table-next";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {HOSTNMAE} from "../../components/Constants/Constants";
+import {connect} from "react-redux";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import {getOrdersByStatus, onDragEnd} from "../../js/actions/restaurantActions";
 
 //axios.defaults.withCredentials = true;
 
-// fake data generator
-const getItems = (count, offset = 0) =>
-    Array.from({ length: count }, (v, k) => k).map(k => ({
-        id: `item-${k + offset}`,
-        content: `item ${k + offset}`
-    }));
+function mapStateToProps(store) {
+    return {
+        items: store.restaurant.items,
+        selected: store.restaurant.selected
+    }
+}
 
-// a little function to help us with reordering the result
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-};
-
-/**
- * Moves an item from one list to another list.
- */
-const move = (source, destination, droppableSource, droppableDestination) => {
-    const sourceClone = Array.from(source);
-    const destClone = Array.from(destination);
-    const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-    destClone.splice(droppableDestination.index, 0, removed);
-
-    const result = {};
-    result[droppableSource.droppableId] = sourceClone;
-    result[droppableDestination.droppableId] = destClone;
-
-    return result;
-};
+function mapDispatchToProps(dispatch) {
+    return {
+        getOrdersByStatus: (payload) => dispatch(getOrdersByStatus(payload)),
+        onDragEnd: (payload) => dispatch(onDragEnd(payload))
+    };
+}
 
 const grid = 8;
 
@@ -66,155 +49,95 @@ const getListStyle = isDraggingOver => ({
 class UpcomingOrdersDraggable extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            columns: [{
-                dataField: 'orderId',
-                text: 'Order ID'
-            }, {
-                dataField: 'customerName',
-                text: 'Customer Name'
-            }, {
-                dataField: 'customerAddress',
-                text: 'Customer Address'
-            }, {
-                dataField: 'items',
-                text: 'items',
-                formatter: this.itemFormatter.bind(this)
-            }, {
-                dataField: 'status',
-                text: 'status'
-            }],
-            upcomingOrders: [],
-            items: [],
-            selected: []
-        };
 
-        this.getOrders = this.getOrders.bind(this);
+        //this.getOrders = this.getOrders.bind(this);
         this.itemFormatter = this.itemFormatter.bind(this);
-        this.onDragEnd = this.onDragEnd.bind(this);
     }
 
-    id2List = {
-        droppable: 'items',
-        droppable2: 'selected'
-    };
 
-    getList = id => this.state[this.id2List[id]];
+    // id2List = {
+    //     droppable: 'items',
+    //     droppable2: 'selected'
+    // };
 
-    onDragEnd = result => {
-        console.log("onDragEnd")
-        console.log("result")
-        console.log(result  )
+    //getList = id => this.props[this.id2List[id]];
 
-
-        const { source, destination } = result;
-        console.log("source")
-        console.log(source)
-        console.log("destination")
-        console.log(destination)
-
-
-        // dropped outside the list
-        if (!destination) {
-            return;
-        }
-
-        if (source.droppableId === destination.droppableId) {
-            const items = reorder(
-                this.getList(source.droppableId),
-                source.index,
-                destination.index
-            );
-
-            let state = { items };
-
-            if (source.droppableId === 'droppable2') {
-                state = { selected: items };
-            }
-
-            this.setState(state);
-        } else {
-            const result = move(
-                this.getList(source.droppableId),
-                this.getList(destination.droppableId),
-                source,
-                destination
-            );
-
-            this.setState({
-                items: result.droppable,
-                selected: result.droppable2
-            });
-        }
-    };
+    // onDragEnd = result => {
+    //     console.log("onDragEnd")
+    //     console.log("result")
+    //     console.log(result  )
+    //
+    //
+    //     const { source, destination } = result;
+    //     console.log("source")
+    //     console.log(source)
+    //     console.log("destination")
+    //     console.log(destination)
+    //
+    //
+    //     // dropped outside the list
+    //     if (!destination) {
+    //         return;
+    //     }
+    //
+    //     if (source.droppableId === destination.droppableId) {
+    //         const items = reorder(
+    //             this.getList(source.droppableId),
+    //             source.index,
+    //             destination.index
+    //         );
+    //
+    //         let state = { items };
+    //
+    //         if (source.droppableId === 'droppable2') {
+    //             state = { selected: items };
+    //         }
+    //
+    //         console.log("Intra list movement")
+    //         console.log("state")
+    //         console.log(state)
+    //         console.log("this.getList(source.droppableId")
+    //         console.log(this.getList(source.droppableId))
+    //
+    //         this.setState(state);
+    //     } else {
+    //         console.log("(source.droppableId)")
+    //         console.log(source.droppableId)
+    //
+    //         console.log("this.getList(source.droppableId)")
+    //         console.log(this.getList(source.droppableId))
+    //
+    //         console.log("this.getList(\"droppable\")")
+    //         console.log(this.getList("droppable"))
+    //
+    //         const result = move(
+    //             this.getList(source.droppableId),
+    //             this.getList(destination.droppableId),
+    //             source,
+    //             destination
+    //         );
+    //
+    //
+    //
+    //         this.setState({
+    //             items: result.droppable,
+    //             selected: result.droppable2
+    //         });
+    //     }
+    // };
 
     itemFormatter = (cell, row) => {
         return cell.join(" | ")
     };
 
-    getOrderBasedOnStatus(response, status) {
-        const ordersByStatus = response.data.filter(order => {
-                return (order.status === "New") || (order.status === "Cancel")
-            }
-        );
-
-        const displayOrders = [];
-
-        ordersByStatus.forEach(function (order) {
-            const displayOrder = {};
-            const items = JSON.parse(order.items);
-
-            displayOrder["status"] = order.status;
-            displayOrder["id"] = order._id;
-            displayOrder["orderId"] = order._id;
-            displayOrder["customerName"] = order.customer_name;
-            displayOrder["customerAddress"] = order.customer_address;
-            displayOrder["items"] = [];
-            displayOrder["image"] = "restaurant-logo.png";
-
-            items.items.forEach(function (item) {
-                const line = `Name: ${item.name} Quantity: ${item.quantity} Price: ${item.price}`;
-                displayOrder.items.push(line);
-            });
-
-            displayOrder["content"] = <div>
-                <img style={{width: "150px", height: "150px", margin: 0}} src={require("../../images/" + displayOrder.image)}/>
-                <h4>Name: {order.customer_address}</h4>
-            </div>;
-
-            displayOrders.push(displayOrder);
-        });
-
-        return displayOrders;
-    }
-
-    getOrders() {
-        console.log("Inside UpcomingOrdersDraggable");
-
-        const payload = {};
-        payload.userId = localStorage.getItem('_id');
-
-        axios.post(`http://${HOSTNMAE}:3001/orders/getByBuyer`, payload)
-            .then((response) => {
-                // console.log("response")
-                // console.log(response)
-
-                const array = this.getOrderBasedOnStatus(response, "New");
-
-                let halfWayThough = Math.ceil(array.length / 2)
-
-                let arrayFirstHalf = array.slice(0, halfWayThough);
-                let arraySecondHalf = array.slice(halfWayThough, array.length);
-
-                this.setState({
-                    items: arrayFirstHalf, selected: arraySecondHalf
-                });
-            });
-    }
-
     componentWillMount() {
         if (localStorage.getItem('userType') !== null) {
-            this.getOrders();
+            const payload = {};
+            payload.userId = localStorage.getItem('_id');
+            payload.statusSet = new Set(["New", "Preparing", "Ready"]);
+            payload.statusCode = "Upcoming";
+
+            this.props.getOrdersByStatus(payload);
         }
     }
 
@@ -224,13 +147,13 @@ class UpcomingOrdersDraggable extends Component {
         return (
             <div>
                 <div className='rowC'>
-                    <DragDropContext onDragEnd={this.onDragEnd}>
+                    <DragDropContext onDragEnd={this.props.onDragEnd}>
                         <Droppable droppableId="droppable">
                             {(provided, snapshot) => (
                                 <div
                                     ref={provided.innerRef}
                                     style={getListStyle(snapshot.isDraggingOver)}>
-                                    {this.state.items.map((item, index) => (
+                                    {this.props.items.map((item, index) => (
                                         <Draggable
                                             key={item.id}
                                             draggableId={item.id}
@@ -258,7 +181,7 @@ class UpcomingOrdersDraggable extends Component {
                                 <div
                                     ref={provided.innerRef}
                                     style={getListStyle(snapshot.isDraggingOver)}>
-                                    {this.state.selected.map((item, index) => (
+                                    {this.props.selected.map((item, index) => (
                                         <Draggable
                                             key={item.id}
                                             draggableId={item.id}
@@ -288,4 +211,4 @@ class UpcomingOrdersDraggable extends Component {
     }
 }
 
-export default UpcomingOrdersDraggable;
+export default connect(mapStateToProps, mapDispatchToProps)(UpcomingOrdersDraggable);

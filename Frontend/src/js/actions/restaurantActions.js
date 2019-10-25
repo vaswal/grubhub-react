@@ -1,10 +1,69 @@
-import {PLACE_ORDER, PLACE_ORDER_ERROR, GET_MENU_ITEMS, ON_CLICK_SECTION, PAGE_CHANGED} from "../constants/action-types";
+import {PLACE_ORDER, PLACE_ORDER_ERROR, GET_MENU_ITEMS, ON_CLICK_SECTION, PAGE_CHANGED, SEARCH_ITEM, FILTER_RESTAURANTS,
+    GET_ORDERS_BY_STATUS, GET_ORDERS_OF_ALL_STATUS, ON_DRAG_END} from "../constants/action-types";
 import {HOSTNMAE} from "../../components/Constants/Constants";
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 
 //axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+
+export function onDragEnd(payload) {
+    return (dispatch) => {
+        dispatch(onDragEndUpdate(payload));
+    }
+};
+
+export function setFilteredRestaurants(payload) {
+    return (dispatch) => {
+        dispatch(setFilteredRestaurantsUpdate(payload));
+    }
+}
+
+export function searchItem(payload) {
+    return (dispatch) => {
+        axios.post(`http://${HOSTNMAE}:3001/orders/menu_item/search`, payload)
+            .then((response) => dispatch(searchItemUpdate(response.data)))
+    }
+}
+
+
+export function getOrdersByStatus(payload) {
+    console.log("getOrdersByStatus ");
+
+    return (dispatch) => {
+        axios.post(`http://${HOSTNMAE}:3001/orders/get/byBuyer`, payload)
+            .then((response) => {
+                const responseEnriched = payload;
+                responseEnriched.data = response.data
+
+                    // Object.assign({}, response, payload)
+                console.log("responseEnriched")
+                console.log(responseEnriched)
+
+                dispatch(getOrdersByStatusUpdate(responseEnriched))
+            })
+    }
+}
+
+const getOrdersByStatusUpdate = (returnedData) => {
+    console.log("getOrdersByStatusUpdate");
+    console.log(returnedData);
+
+
+    return {type: GET_ORDERS_BY_STATUS, payload: returnedData}
+};
+
+const onDragEndUpdate = (returnedData) => {
+    return {type: ON_DRAG_END, payload: returnedData}
+}
+
+const searchItemUpdate = (returnedData) => {
+    return {type: SEARCH_ITEM, payload: returnedData}
+}
+
+const setFilteredRestaurantsUpdate = (returnedData) => {
+    return {type: FILTER_RESTAURANTS, payload: returnedData}
+}
 
 export function placeOrder(payload) {
     console.log("placeOrder payload")
@@ -48,10 +107,6 @@ export function pageChanged(payload) {
 }
 
 const pageChangedUpdate = (returnedData) => {
-
-
-
-
     return {type: PAGE_CHANGED, payload: returnedData}
 }
 

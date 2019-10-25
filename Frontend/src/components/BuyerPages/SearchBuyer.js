@@ -1,12 +1,27 @@
 import React, {Component} from 'react';
-import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import '../../styles/Navbar.css';
 import axios from 'axios';
 import {Button, Card} from "react-bootstrap";
+import {connect} from "react-redux";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Checkbox from "./Checkbox";
-import {HOSTNMAE} from "../../components/Constants/Constants";
+import {searchItem, setFilteredRestaurants, pageChanged, placeOrder} from "../../js/actions/restaurantActions";
+
+function mapStateToProps(store) {
+    return {
+        restaurants: store.restaurant.restaurants,
+        filteredRestaurants: store.restaurant.filteredRestaurants,
+        allCuisines: store.restaurant.allCuisines,
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        searchItem: (payload) => dispatch(searchItem(payload)),
+        setFilteredRestaurants: (payload) => dispatch(setFilteredRestaurants(payload)),
+    };
+}
 
 class SearchBuyer extends Component {
     constructor(props) {
@@ -16,13 +31,10 @@ class SearchBuyer extends Component {
             searchTerm: null,
             redirectVar: null,
             sidebarOpen: true,
-            selectedRestaurantId: null,
-            allCuisines: [],
-            restaurants: [],
-            filteredRestaurants: []
+            selectedRestaurantId: null
         };
 
-        this.state.checkboxes = this.state.allCuisines.reduce(
+        this.state.checkboxes = this.props.allCuisines.reduce(
             (options, option) => ({
                 ...options,
                 [option]: false
@@ -31,9 +43,7 @@ class SearchBuyer extends Component {
         );
 
         this.createRestaurants = this.createRestaurants.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
-
-
+        this.doFilter = this.doFilter.bind(this);
     }
 
     handleCheckboxChange = changeEvent => {
@@ -56,9 +66,9 @@ class SearchBuyer extends Component {
         />
     );
 
-    createCheckboxes = () => this.state.allCuisines.map(this.createCheckbox);
+    createCheckboxes = () => this.props.allCuisines.map(this.createCheckbox);
 
-    handleFormSubmit = formSubmitEvent => {
+    doFilter = formSubmitEvent => {
         formSubmitEvent.preventDefault();
         const selectedCuisines = new Set();
 
@@ -69,17 +79,14 @@ class SearchBuyer extends Component {
                 selectedCuisines.add(checkbox);
             });
 
-        if (selectedCuisines.size === 0) {
-            this.setState({filteredRestaurants: this.state.restaurants});
-            return;
-        }
-
-        const _filteredRestaurants = this.state.restaurants.filter(restaurant => {
+        const _filteredRestaurants = selectedCuisines.size === 0 ?
+            this.props.restaurants :
+            this.props.restaurants
+            .filter(restaurant => {
                 return (selectedCuisines.has(restaurant.cuisine))
-            }
-        );
+            });
 
-        this.setState({filteredRestaurants: _filteredRestaurants});
+        this.props.setFilteredRestaurants(_filteredRestaurants);
     };
 
     goToRestaurant(restaurantId) {
@@ -91,9 +98,9 @@ class SearchBuyer extends Component {
 
     createRestaurants() {
         console.log("createRestaurants");
-        console.log(this.state.restaurants);
+        console.log(this.props.restaurants);
 
-        const allTabs = this.state.filteredRestaurants.map(restaurant => {
+        const allTabs = this.props.filteredRestaurants.map(restaurant => {
             return (
                 <li>
                     <div className="menu">
@@ -141,7 +148,7 @@ class SearchBuyer extends Component {
                 <Card style={{width: '18rem'}}>
                     <Card.Body>
                         <Card.Title>Filter by cuisine</Card.Title>
-                        <form onSubmit={this.handleFormSubmit}>
+                        <form onSubmit={this.doFilter}>
                             {this.createCheckboxes()}
                             <Button type="submit" variant="primary">Filter</Button>
                         </form>
@@ -161,15 +168,7 @@ class SearchBuyer extends Component {
         const payload = {};
         payload.searchTerm = this.props.location.state.searchTerm;
 
-        axios.post(`http://${HOSTNMAE}:3001/orders/menu_item/search`, payload)
-            .then((response) => {
-                console.log(response.data);
-                this.setState({restaurants: response.data, filteredRestaurants: response.data});
-                const _allCuisines = [...new Set(this.state.restaurants.map(({cuisine}) => cuisine))];
-                this.setState({allCuisines: _allCuisines});
-            })
-            .catch((error) => {
-            });
+        this.props.searchItem(payload);
     }
 
     render() {
@@ -186,4 +185,4 @@ class SearchBuyer extends Component {
     }
 }
 
-export default SearchBuyer;
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBuyer);

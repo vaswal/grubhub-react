@@ -3,10 +3,15 @@ import {Redirect} from 'react-router';
 import '../../styles/Navbar.css';
 import axios from 'axios';
 import BootstrapTable from "react-bootstrap-table-next";
+import {connect} from "react-redux";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {HOSTNMAE} from "../../components/Constants/Constants";
+import {getOrdersByStatus, setFilteredRestaurants} from "../../js/actions/restaurantActions";
 
 //axios.defaults.withCredentials = true;
+
+
+
 
 class UpcomingOrders extends Component {
     constructor(props) {
@@ -80,22 +85,24 @@ class UpcomingOrders extends Component {
     }
 
     getOrders(payload) {
-        console.log("Inside getOrders");
-        axios.post(`http://${HOSTNMAE}:3001/orders/getByOwner`, payload)
-            .then((response) => {
-                this.setState({
-                    upcomingOrders: this.getOrderBasedOnStatus(response, "Delivered")
-                });
-            });
+
+        // console.log("Inside getOrders");
+        // axios.post(`http://${HOSTNMAE}:3001/orders/getByOwner`, payload)
+        //     .then((response) => {
+        //         this.setState({
+        //             upcomingOrders: this.getOrderBasedOnStatus(response, "Delivered")
+        //         });
+        //     });
     }
 
     componentWillMount() {
         if (localStorage.getItem('userType') !== null) {
             const payload = {};
-            payload.queryName = "GET_GRUBHUB_ORDERS_BY_BUYER";
-            payload.arguments = [localStorage.getItem('userId')];
+            payload.userId = localStorage.getItem('_id');
+            payload.statusSet = new Set(["New", "Preparing", "Ready"]);
+            payload.statusCode = "Upcoming";
 
-            this.getOrders(payload);
+            this.props.getOrdersByStatus(payload);
         }
     }
 
@@ -111,4 +118,4 @@ class UpcomingOrders extends Component {
     }
 }
 
-export default UpcomingOrders;
+export default connect(mapStateToProps, mapDispatchToProps)(UpcomingOrders);

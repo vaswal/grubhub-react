@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Button, Card, Pagination, ListGroup, ListGroupItem} from "react-bootstrap";
-import uuid from "uuid";
 import "../../styles/Menu.css"
 import axios from 'axios';
 import {connect} from "react-redux";
