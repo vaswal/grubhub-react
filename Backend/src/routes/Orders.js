@@ -175,18 +175,27 @@ router.post('/getByBuyer', function(req, res) {
         .catch(() => {console.log("Error in getByOwnerMongo")})
 });
 
+router.post('/get/byBuyer', function(req, res) {
+    console.log("req.body")
+    console.log(req.body)
+
+    Order.find({buyer_id: req.body.userId})
+        .then((orders) => {
+            console.log("orders");
+            console.log(orders);
+            res.send(orders)
+        })
+        .catch(() => {console.log("Error in getByOwnerMongo")})
+});
+
 router.post('/getByOwnerMongo', function(req, res) {
     console.log("req.body")
     console.log(req.body)
 
     Order.find({owner_id: req.body.userId})
         .then((orders) => {
-            console.log("orders")
-            console.log(orders)
-
-            // for (let i = 0; i < orders[0].items.length; i++) {
-            //     console.log(orders[0].items[i])
-            // }
+            console.log("orders");
+            console.log(orders);
             res.send(orders)
         })
         .catch(() => {console.log("Error in getByOwnerMongo")})
