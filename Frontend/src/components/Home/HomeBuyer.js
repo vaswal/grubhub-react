@@ -9,6 +9,8 @@ import UpcomingOrdersDraggable from '../BuyerPages/UpcomingOrdersDraggable';
 import PastOrders from '../BuyerPages/PastOrders';
 import ProfileBuyer from '../Profile/ProfileBuyer';
 import SignOut from '../Create/SignOut';
+import ChatPage from '../BuyerPages/ChatPage';
+import HelpPage from '../BuyerPages/HelpPage';
 
 import {Link, NavLink, Route} from "react-router-dom";
 import {Button, Nav, Navbar} from "react-bootstrap";
@@ -69,6 +71,8 @@ class HomeBuyer extends Component {
                             <Nav.Link as={NavLink} to='/homeBuyer/pastOrders'>Past orders</Nav.Link>
                         </Nav>
                         <Nav className="ml-auto">
+                            <Nav.Link as={NavLink} to='/homeBuyer/help'>Help</Nav.Link>
+                            <Nav.Link as={NavLink} to='/homeBuyer/chat'>Chat</Nav.Link>
                             <Nav.Link as={NavLink} to='/homeBuyer/profileBuyer/'>Profile</Nav.Link>
                             <Nav.Link as={NavLink} to='/homeBuyer/signOut/'>SignOut</Nav.Link>
                         </Nav>
@@ -83,8 +87,12 @@ class HomeBuyer extends Component {
                         <Route exact path='/homeBuyer/upcomingOrders/' component={UpcomingOrdersDraggable}/>
                         <Route exact path='/homeBuyer/pastOrders/' component={PastOrders}/>
                         <Route exact path='/homeBuyer/signOut/' component={SignOut}/>
+                        <Route exact path='/homeBuyer/help' component={HelpPage}/>
+                        <Route exact path='/homeBuyer/chat' component={ChatPage}/>
+
                     </Switch>
                 </div>
+
                 {((this.props.location.pathname === "/homeBuyer") || (this.props.location.pathname === "/homeBuyer/")) &&
                 <div>
                     <img className="search-img" src={logo} alt="Quora"/>

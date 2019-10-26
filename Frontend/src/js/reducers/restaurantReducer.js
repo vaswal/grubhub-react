@@ -17,7 +17,8 @@ const initialState = {
     filteredRestaurants: [],
     allCuisines: [],
     items: [],
-    selected: []
+    selected: [],
+    allOrders: []
 
 };
 
@@ -84,36 +85,6 @@ const getOrderBasedOnStatus = (data, statusSet) => {
 
     return displayOrders;
 }
-
-// const getOrderBasedOnStatus = (data, statusSet) => {
-//     const ordersByStatus = data.filter(order => {
-//             return (statusSet.has(order.status))
-//         }
-//     );
-//
-//     const displayOrders = [];
-//
-//     ordersByStatus.forEach(function (order) {
-//         const displayOrder = {};
-//         const items = JSON.parse(order.items);
-//
-//         displayOrder["status"] = order.status;
-//         displayOrder["id"] = order.grubhub_order_id;
-//         displayOrder["orderId"] = order.grubhub_order_id;
-//         displayOrder["customerName"] = order.customer_name;
-//         displayOrder["customerAddress"] = order.customer_address;
-//         displayOrder["items"] = [];
-//
-//         items.items.forEach(function (item) {
-//             const line = `Name: ${item.name} Quantity: ${item.quantity} Price: ${item.price}`;
-//             displayOrder.items.push(line);
-//         });
-//
-//         displayOrders.push(displayOrder);
-//     });
-//
-//     return displayOrders;
-// }
 
 const createPages = (state, currentTab, activePage) => {
     const newItems = [];
@@ -225,7 +196,14 @@ export default function restaurantReducer(state = initialState, action) {
                 items: arrayFirstHalf,
                 selected: arraySecondHalf
             });
+        } else if ("All" === action.payload.statusCode) {
+            return Object.assign({}, state, {
+                allOrders: action.payload.data
+            });
         }
+    } else if (action.type === GET_ORDERS_OF_ALL_STATUS) {
+
+
     } else if (action.type === ON_DRAG_END) {
         const id2List = {
             droppable: 'items',

@@ -5,8 +5,28 @@ import '../../styles/Orders.css';
 import {HOSTNMAE} from "../../components/Constants/Constants";
 import {Redirect} from 'react-router';
 import axios from 'axios';
+import {connect} from "react-redux";
+import {getOrders, changeOrderStatus} from "../../js/actions/ownerActions";
 
 axios.defaults.withCredentials = true;
+
+function mapStateToProps(store) {
+    return {
+        newOrders: store.owner.newOrders,
+        preparingOrders: store.owner.preparingOrders,
+        readyOrders: store.owner.readyOrders,
+        deliveredOrders: store.owner.deliveredOrders,
+        canceledOrders: store.owner.canceledOrders
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        getOrders: (payload) => dispatch(getOrders(payload)),
+        changeOrderStatus: (payload) => dispatch(changeOrderStatus(payload))
+    };
+
+}
 
 class Orders extends Component {
     constructor(props) {
@@ -30,8 +50,6 @@ class Orders extends Component {
                 dataField: 'status',
                 text: 'status'
             }],
-            newOrders: [],
-            preparingOrders: [],
             products: [{
                 id: '1',
                 name: 'burger',
@@ -73,44 +91,26 @@ class Orders extends Component {
         this.makeOrderStatusReady = this.makeOrderStatusReady.bind(this);
         this.makeOrderStatusDelivered = this.makeOrderStatusDelivered.bind(this);
         this.cancelOrder = this.cancelOrder.bind(this);
-        this.getOrders = this.getOrders.bind(this);
-    }
-
-    changeOrder(orderId, status) {
-        const payload = {};
-        payload.queryName = "UPDATE_ORDER_STATUS";
-        payload.arguments = [status, orderId];
-
-        axios.post(`http://${HOSTNMAE}:3001/orders/update`, payload)
-            .then((response) => {
-                console.log("response");
-                console.log(response);
-                const payload = {};
-                payload.queryName = "GET_GRUBHUB_ORDERS_BY_OWNER";
-                payload.arguments = [localStorage.getItem('userId')];
-
-                this.getOrders(payload);
-            });
     }
 
     makeOrderStatusPreparing(cell) {
         console.log("Inside makeOrderStatusPreparing");
-        this.changeOrder(cell.orderId, "Preparing");
+        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Preparing"});
     }
 
     makeOrderStatusReady(cell) {
         console.log("Inside makeOrderStatusPreparing");
-        this.changeOrder(cell.orderId, "Ready");
+        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Ready"});
     }
 
     makeOrderStatusDelivered(cell) {
         console.log("Inside makeOrderStatusPreparing");
-        this.changeOrder(cell.orderId, "Delivered");
+        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Delivered"});
     }
 
     cancelOrder(cell) {
         console.log("Inside canelOrder");
-        this.changeOrder(cell.orderId, "Cancel");
+        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Cancel"});
     }
 
     handleSelect(key) {
@@ -122,7 +122,7 @@ class Orders extends Component {
         console.log("Inside new orders");
         return (
             <BootstrapTable keyField='id'
-                            data={this.state.newOrders}
+                            data={this.props.newOrders}
                             columns={this.state.newColumns}
             />
         );
@@ -132,7 +132,7 @@ class Orders extends Component {
         console.log("Inside preparingOrdersTable");
         return (
             <BootstrapTable keyField='id'
-                            data={this.state.preparingOrders}
+                            data={this.props.preparingOrders}
                             columns={this.state.preparingColumns}
             />
         );
@@ -142,7 +142,7 @@ class Orders extends Component {
         console.log("Inside new orders");
         return (
             <BootstrapTable keyField='id'
-                            data={this.state.readyOrders}
+                            data={this.props.readyOrders}
                             columns={this.state.readyColumns}
             />
         );
@@ -152,11 +152,22 @@ class Orders extends Component {
         console.log("Inside new orders");
         return (
             <BootstrapTable keyField='id'
-                            data={this.state.deliveredOrders}
+                            data={this.props.deliveredOrders}
                             columns={this.state.basicColumns}
             />
         );
     }
+
+    canceledOrdersTable() {
+        console.log("Inside new orders");
+        return (
+            <BootstrapTable keyField='id'
+                            data={this.props.canceledOrders}
+                            columns={this.state.basicColumns}
+            />
+        );
+    }
+
 
     addButtonsForNew = (cell, row) => {
         return (
@@ -207,55 +218,12 @@ class Orders extends Component {
         return cell.join(" | ")
     };
 
-    getOrderBasedOnStatus(response, status) {
-        const ordersByStatus = response.data.filter(order => {
-                return (order.status === status)
-            }
-        );
-
-        const displayOrders = [];
-
-        ordersByStatus.forEach(function (order) {
-            const displayOrder = {};
-            const items = JSON.parse(order.items);
-
-            displayOrder["status"] = status;
-            displayOrder["orderId"] = order.grubhub_order_id;
-            displayOrder["customerName"] = order.customer_name;
-            displayOrder["customerAddress"] = order.customer_address;
-            displayOrder["items"] = [];
-
-            items.items.forEach(function (item) {
-                const line = `Name: ${item.name} Quantity: ${item.quantity} Price: ${item.price}`;
-                displayOrder.items.push(line);
-            });
-
-            displayOrders.push(displayOrder);
-        });
-
-        return displayOrders;
-    }
-
-    getOrders(payload) {
-        console.log("Inside signInBuyerAction dispatch");
-        axios.post(`http://${HOSTNMAE}:3001/orders/getByOwnerMongo`, payload)
-        //axios.post(`http://${HOSTNMAE}:3001/orders/getByOwner`, payload)
-            .then((response) => {
-                this.setState({
-                    newOrders: this.getOrderBasedOnStatus(response, "New"),
-                    preparingOrders: this.getOrderBasedOnStatus(response, "Preparing"),
-                    readyOrders: this.getOrderBasedOnStatus(response, "Ready"),
-                    deliveredOrders: this.getOrderBasedOnStatus(response, "Delivered")
-                });
-            });
-    }
-
     componentDidMount() {
         if (localStorage.getItem('userType') !== null) {
             const payload = {};
             payload.userId = localStorage.getItem('_id');
 
-            this.getOrders(payload);
+            this.props.getOrders(payload);
         }
     }
 
@@ -270,14 +238,16 @@ class Orders extends Component {
                     <Tab className="tabs-style" eventKey="preparing" title="Preparing">Preparing</Tab>
                     <Tab className="tabs-style" eventKey="ready" title="Ready">Ready</Tab>
                     <Tab className="tabs-style" eventKey="delivered" title="Delivered">Delivered</Tab>
+                    <Tab className="tabs-style" eventKey="cancel" title="Canceled">Canceled</Tab>
                 </Tabs>
                 {this.state.key === 'new' && <div>{this.newOrdersTable()}</div>}
                 {this.state.key === 'preparing' && <div>{this.preparingOrdersTable()}</div>}
                 {this.state.key === 'ready' && <div>{this.readyOrdersTable()}</div>}
                 {this.state.key === 'delivered' && <div>{this.deliveredOrdersTable()}</div>}
+                {this.state.key === 'cancel' && <div>{this.canceledOrdersTable()}</div>}
             </div>
         );
     }
 }
 
-export default Orders;
+export default connect(mapStateToProps, mapDispatchToProps)(Orders);
