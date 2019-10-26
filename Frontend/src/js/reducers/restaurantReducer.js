@@ -1,7 +1,17 @@
-import React, {Component} from 'react';
-import {Button, Card, Pagination, ListGroup, ListGroupItem} from "react-bootstrap";
-import {PLACE_ORDER, PLACE_ORDER_ERROR, GET_MENU_ITEMS, ON_CLICK_SECTION, PAGE_CHANGED, SEARCH_ITEM, FILTER_RESTAURANTS,
-    GET_ORDERS_BY_STATUS, GET_ORDERS_OF_ALL_STATUS, ON_DRAG_END} from "../constants/action-types";
+import React from 'react';
+import {Pagination} from "react-bootstrap";
+import {
+    FILTER_RESTAURANTS,
+    GET_MENU_ITEMS,
+    GET_ORDERS_BY_STATUS,
+    GET_ORDERS_OF_ALL_STATUS,
+    ON_CLICK_SECTION,
+    ON_DRAG_END,
+    PAGE_CHANGED,
+    PLACE_ORDER,
+    PLACE_ORDER_ERROR,
+    SEARCH_ITEM
+} from "../constants/action-types";
 
 const initialState = {
     placeOrderSuccess: null,
@@ -49,7 +59,6 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 };
 
 
-
 const getOrderBasedOnStatus = (data, statusSet) => {
     const ordersByStatus = data.filter(order => {
             return (statusSet.has(order.status))
@@ -76,7 +85,8 @@ const getOrderBasedOnStatus = (data, statusSet) => {
         });
 
         displayOrder["content"] = <div>
-            <img style={{width: "150px", height: "150px", margin: 0}} src={require("../../images/" + displayOrder.image)}/>
+            <img style={{width: "150px", height: "150px", margin: 0}}
+                 src={require("../../images/" + displayOrder.image)}/>
             <h4>Name: {order.customer_address}</h4>
         </div>;
 
@@ -217,7 +227,7 @@ export default function restaurantReducer(state = initialState, action) {
         console.log("result")
         console.log(action.payload)
 
-        const { source, destination } = action.payload;
+        const {source, destination} = action.payload;
         console.log("source")
         console.log(source)
         console.log("destination")
@@ -235,10 +245,10 @@ export default function restaurantReducer(state = initialState, action) {
                 destination.index
             );
 
-            let state = { items };
+            let state = {items};
 
             if (source.droppableId === 'droppable2') {
-                state = { selected: items };
+                state = {selected: items};
             }
 
             console.log("Intra list movement")

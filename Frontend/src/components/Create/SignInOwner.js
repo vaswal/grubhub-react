@@ -17,7 +17,7 @@ function mapStateToProps(store) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        signInOwner: (book) => dispatch(signInMongo (book))
+        signInOwner: (book) => dispatch(signInMongo(book))
     };
 }
 

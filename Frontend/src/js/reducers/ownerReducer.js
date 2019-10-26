@@ -1,11 +1,12 @@
-import {CHANGE_ORDER_STATUS, GET_ORDERS_OF_ALL_STATUS, SIGN_UP} from "../constants/action-types";
+import {CHANGE_ORDER_STATUS, GET_ORDERS_OF_ALL_STATUS_OWNER} from "../constants/action-types";
 
 const initialState = {
     newOrders: [],
     preparingOrders: [],
     readyOrders: [],
     deliveredOrders: [],
-    canceledOrders: []
+    canceledOrders: [],
+    allOrders: []
 };
 
 const getOrderBasedOnStatus = (response, status) => {
@@ -42,13 +43,9 @@ export default function ownerReducer(state = initialState, action) {
     console.log("action.payload")
     console.log(action.payload)
 
-    if (action.type === GET_ORDERS_OF_ALL_STATUS) {
+    if (action.type === GET_ORDERS_OF_ALL_STATUS_OWNER) {
         return Object.assign({}, state, {
-            newOrders: getOrderBasedOnStatus(action.payload, "New"),
-            preparingOrders: getOrderBasedOnStatus(action.payload, "Preparing"),
-            readyOrders: getOrderBasedOnStatus(action.payload, "Ready"),
-            deliveredOrders: getOrderBasedOnStatus(action.payload, "Delivered"),
-            canceledOrders: getOrderBasedOnStatus(action.payload, "Cancel")
+            allOrders: action.payload
         });
     } else if (action.type === CHANGE_ORDER_STATUS) {
         return Object.assign({}, state, {});

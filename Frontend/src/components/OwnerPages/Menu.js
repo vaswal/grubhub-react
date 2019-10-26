@@ -260,13 +260,15 @@ class Menu extends Component {
                     <div className="menu">
                         <form className="form" onSubmit={this.updateMenuItem(item.menu_item_id)}>
                             <div className='rowC'>
-                                <div className="card-header"><img style={{width: "150px", height: "150px", margin: 0}} src={require(`../../images/grubhub/${item.image}`)}/>
+                                <div className="card-header"><img style={{width: "150px", height: "150px", margin: 0}}
+                                                                  src={require(`../../images/grubhub/${item.image}`)}/>
                                 </div>
-                                <div style={{marginLeft: "-280px"} }>
+                                <div style={{marginLeft: "-280px"}}>
                                     <div className="x-div">
                                         <div className='rowC'>
                                             <label className="account-labels menu-label">Name</label>
-                                            <label style={{marginLeft: "-1px"}} className="account-labels menu-label" name="name">{item.name}</label>
+                                            <label style={{marginLeft: "-1px"}} className="account-labels menu-label"
+                                                   name="name">{item.name}</label>
                                         </div>
 
                                         <div className='rowC'>
@@ -312,7 +314,8 @@ class Menu extends Component {
 
                             <div style={{marginLeft: "250px"}} className='rowC'>
                                 <Button type="submit" variant="primary" className="menu-btn">Update</Button>
-                                <Button style={{marginLeft: "60px"}} type="button" variant="primary" className="menu-btn"
+                                <Button style={{marginLeft: "60px"}} type="button" variant="primary"
+                                        className="menu-btn"
                                         onClick={this.delete(item.menu_item_id)}>Delete</Button>
                             </div>
                             <div>

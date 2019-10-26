@@ -1,5 +1,4 @@
-import {PLACE_ORDER, PLACE_ORDER_ERROR, GET_MENU_ITEMS, ON_CLICK_SECTION, PAGE_CHANGED, SEARCH_ITEM, FILTER_RESTAURANTS,
-    GET_ORDERS_BY_STATUS, GET_ORDERS_OF_ALL_STATUS, CHANGE_ORDER_STATUS} from "../constants/action-types";
+import {CHANGE_ORDER_STATUS, GET_ORDERS_OF_ALL_STATUS_OWNER} from "../constants/action-types";
 import {HOSTNMAE} from "../../components/Constants/Constants";
 import axios from 'axios';
 
@@ -20,7 +19,7 @@ export function getOrders(payload) {
 }
 
 const getOrdersUpdate = (returnedData) => {
-    return {type: GET_ORDERS_OF_ALL_STATUS, payload: returnedData}
+    return {type: GET_ORDERS_OF_ALL_STATUS_OWNER, payload: returnedData}
 }
 
 export function changeOrderStatus(payload) {

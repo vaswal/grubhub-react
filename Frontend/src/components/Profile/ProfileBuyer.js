@@ -9,6 +9,7 @@ import {Redirect} from 'react-router';
 import {getProfileAction, updateProfileAction} from "../../js/actions/profileActions";
 import axios from 'axios';
 import {HOSTNMAE} from "../../components/Constants/Constants";
+
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 function mapStateToProps(store) {
@@ -273,7 +274,8 @@ class ConnectedBuyerProfile extends Component {
 
         if (imagePreviewUrl) {
             $imagePreview = (
-                <div className="card-header"><img style={{width: "150px", height: "150px"}} src={require(`../../images/grubhub/${this.state.imageName}`)}/>
+                <div className="card-header"><img style={{width: "150px", height: "150px"}}
+                                                  src={require(`../../images/grubhub/${this.state.imageName}`)}/>
                 </div>);
         }
 

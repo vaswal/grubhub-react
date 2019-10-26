@@ -1,20 +1,19 @@
 import React, {Component} from "react";
-import {Button, Card} from "react-bootstrap";
+import {Badge, Button, Card} from "react-bootstrap";
 import "../../styles/Menu.css"
-import {getOrdersByStatus, onDragEnd} from "../../js/actions/restaurantActions";
+import {getOrders} from "../../js/actions/ownerActions";
 import {connect} from "react-redux";
 import {Redirect} from "react-router";
 
 function mapStateToProps(store) {
     return {
-        allOrders: store.restaurant.allOrders,
+        allOrders: store.owner.allOrders,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getOrdersByStatus: (payload) => dispatch(getOrdersByStatus(payload)),
-        onDragEnd: (payload) => dispatch(onDragEnd(payload))
+        getOrders: (payload) => dispatch(getOrders(payload)),
     };
 }
 
@@ -41,27 +40,39 @@ class HelpPage extends Component {
         payload.userId = localStorage.getItem('_id');
         payload.statusCode = "All";
 
-        this.props.getOrdersByStatus(payload);
+        this.props.getOrders(payload);
+    }
+
+    getOrderStatusBadge = (status) => {
+        let badge = null;
+
+        switch (status) {
+            case "New":
+                badge = <Badge style={{fontSize: 10}} variant="primary">New</Badge>
+                break;
+
+            case "Preparing":
+                badge = <Badge style={{fontSize: 10}} variant="info">Preparing</Badge>
+                break;
+
+            case "Ready":
+                badge = <Badge style={{fontSize: 10}} variant="dark">Ready</Badge>
+                break;
+
+            case "Delivered":
+                badge = <Badge style={{fontSize: 10}} variant="success">Delivered</Badge>
+                break;
+
+            case "Cancel":
+                badge = <Badge style={{fontSize: 10}} variant="danger">Cancel</Badge>
+                break;
+        }
+
+        return badge;
     }
 
     populateSection = () => {
         console.log("populateSection");
-
-        // if (this.props.allOrders.length === 0) {
-        //     return <div>
-        //         <Card style={{ width: '18rem' }}>
-        //             <Card.Img variant="top" src={require("../../images/restaurant-logo.png")} />
-        //             <Card.Body>
-        //                 <Card.Title>Card Title</Card.Title>
-        //                 <Card.Text>
-        //                     Some quick example text to build on the card title and make up the bulk of
-        //                     the card's content.
-        //                 </Card.Text>
-        //                 <Button variant="primary" type="button" onClick={this.goToChat} >Chat for help</Button>
-        //             </Card.Body>
-        //         </Card>
-        //     </div>;
-        // }
 
         // console.log("currentTab")
         // console.log(currentTab)
@@ -92,12 +103,12 @@ class HelpPage extends Component {
                     <Card.Body>
                         <Card.Title>Card Title</Card.Title>
                         <Card.Text>
+                            {/*Items - {items}*/}
                             <b>Order Id</b> - {order._id}
                             <br/>
                             <b>Customer Address</b> - {order.customer_address}
                             <br/>
-                            <b>Order Status</b> - {order.status}
-
+                            <b>Order Status</b> - {this.getOrderStatusBadge(order.status)}
                         </Card.Text>
                         <Button onClick={() => this.goToChat(order)} type="button" variant="primary">Chat for
                             help</Button>
@@ -116,8 +127,9 @@ class HelpPage extends Component {
 
         return (
             <div>
+                <h1>Owner help</h1>
                 {this.state.redirectVar !== null && <Redirect to={{
-                    pathname: "/homeBuyer/chat",
+                    pathname: "/homeOwner/chat",
                     state: {selectedOrder: this.state.selectedOrder}
                 }}/>}
                 {this.populateSection()}

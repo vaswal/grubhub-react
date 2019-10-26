@@ -1,4 +1,4 @@
-import {SIGN_IN, SIGN_UP, SIGN_IN_BUYER, SIGN_IN_OWNER, SIGN_UP_BUYER, SIGN_UP_OWNER} from "../constants/action-types";
+import {SIGN_IN, SIGN_UP} from "../constants/action-types";
 
 const initialState = {
     signupSuccess: null,

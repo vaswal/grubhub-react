@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
 import '../../styles/Navbar.css';
-import axios from 'axios';
-import BootstrapTable from "react-bootstrap-table-next";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {HOSTNMAE} from "../../components/Constants/Constants";
 import {connect} from "react-redux";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import {getOrdersByStatus, onDragEnd} from "../../js/actions/restaurantActions";
 
 //axios.defaults.withCredentials = true;

@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import cookie from 'react-cookies';
-import {Redirect} from 'react-router';
 import logo from "../../images/grubhub.svg";
 import '../../styles/Navbar.css';
 

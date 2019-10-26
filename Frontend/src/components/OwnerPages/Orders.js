@@ -2,11 +2,10 @@ import React, {Component} from 'react';
 import {Tab, Tabs} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import '../../styles/Orders.css';
-import {HOSTNMAE} from "../../components/Constants/Constants";
 import {Redirect} from 'react-router';
 import axios from 'axios';
 import {connect} from "react-redux";
-import {getOrders, changeOrderStatus} from "../../js/actions/ownerActions";
+import {changeOrderStatus, getOrders} from "../../js/actions/ownerActions";
 
 axios.defaults.withCredentials = true;
 

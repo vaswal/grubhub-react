@@ -1,4 +1,4 @@
-import {SIGN_IN, SIGN_UP, SIGN_IN_BUYER, SIGN_UP_BUYER, SIGN_UP_OWNER} from "../constants/action-types";
+import {SIGN_IN, SIGN_IN_BUYER, SIGN_UP, SIGN_UP_BUYER, SIGN_UP_OWNER} from "../constants/action-types";
 import {HOSTNMAE} from "../../components/Constants/Constants";
 import axios from 'axios';
 

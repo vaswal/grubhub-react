@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import '../../styles/Account.css';
 import logo from '../../images/grubhubOwnerLogo.png';
 import {connect} from "react-redux";
-import {Redirect} from 'react-router';
 import {signUpMongo} from "../../js/actions/accessActions";
 import {NavLink} from 'react-router-dom';
 

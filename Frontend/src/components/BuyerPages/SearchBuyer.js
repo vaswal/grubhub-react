@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
 import '../../styles/Navbar.css';
-import axios from 'axios';
 import {Button, Card} from "react-bootstrap";
 import {connect} from "react-redux";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Checkbox from "./Checkbox";
-import {searchItem, setFilteredRestaurants, pageChanged, placeOrder} from "../../js/actions/restaurantActions";
+import {searchItem, setFilteredRestaurants} from "../../js/actions/restaurantActions";
 
 function mapStateToProps(store) {
     return {
@@ -82,9 +81,9 @@ class SearchBuyer extends Component {
         const _filteredRestaurants = selectedCuisines.size === 0 ?
             this.props.restaurants :
             this.props.restaurants
-            .filter(restaurant => {
-                return (selectedCuisines.has(restaurant.cuisine))
-            });
+                .filter(restaurant => {
+                    return (selectedCuisines.has(restaurant.cuisine))
+                });
 
         this.props.setFilteredRestaurants(_filteredRestaurants);
     };

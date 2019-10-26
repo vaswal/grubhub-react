@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {Button, Card, Pagination, ListGroup, ListGroupItem} from "react-bootstrap";
+import {Button, Card, ListGroup, Pagination} from "react-bootstrap";
 import "../../styles/Menu.css"
 import axios from 'axios';
 import {connect} from "react-redux";
 import {Redirect} from 'react-router';
 import {HOSTNMAE} from "../../components/Constants/Constants";
-import {placeOrder, getMenuItems, onClickSection, pageChanged} from "../../js/actions/restaurantActions";
+import {getMenuItems, onClickSection, pageChanged, placeOrder} from "../../js/actions/restaurantActions";
 
 //axios.defaults.withCredentials = true;
 //axios.defaults.headers.post['Content-Type'] = 'application/json' // for POST requests
@@ -118,7 +118,8 @@ class Restaurant extends Component {
                     <li>
                         <div style={{whiteSpace: 'nowrap'}}>
                             Total price
-                            - ${this.state.cartItems.map(item => (item.price * item.quantity)).reduce((prev, next) => prev + next)}
+                            -
+                            ${this.state.cartItems.map(item => (item.price * item.quantity)).reduce((prev, next) => prev + next)}
                         </div>
                     </li>
                 </ul>
@@ -201,7 +202,7 @@ class Restaurant extends Component {
     paginationBasic = () => {
         return (<div>
             <Pagination onClick={this.pageChanged}>{this.props.pageItems}</Pagination>
-            <br />
+            <br/>
         </div>)
     };
 
@@ -251,7 +252,9 @@ class Restaurant extends Component {
 
         console.log("this.state.tabs")
         console.log(this.props.tabs)
-        const items = this.props.allItems.filter(item => {return (item.section === currentTab.name)});
+        const items = this.props.allItems.filter(item => {
+            return (item.section === currentTab.name)
+        });
 
         console.log("this.state.pageItems")
         console.log(this.props.pageItems)
@@ -269,20 +272,24 @@ class Restaurant extends Component {
                 <div className="menu">
                     <form style={{marginTop: "30px"}} className="form" onSubmit={this.addToCart(item.menu_item_id)}>
                         <div className='rowC'>
-                            <div className="card-header"><img style={{width: "150px", height: "150px", margin: 0}} src={require(`../../images/grubhub/${item.image}`)}/></div>
-                            <div style={{marginLeft: "-280px"} }>
+                            <div className="card-header"><img style={{width: "150px", height: "150px", margin: 0}}
+                                                              src={require(`../../images/grubhub/${item.image}`)}/>
+                            </div>
+                            <div style={{marginLeft: "-280px"}}>
                                 <div className="email-div">
                                     <div className='rowC'>
-                                        <label  className="account-labels desc-label" name="descriptionStored">Name</label>
-                                        <label  style={{whiteSpace: 'nowrap', marginLeft: "-1px"}}
-                                                className="account-labels desc-label">{item.name}</label>
+                                        <label className="account-labels desc-label"
+                                               name="descriptionStored">Name</label>
+                                        <label style={{whiteSpace: 'nowrap', marginLeft: "-1px"}}
+                                               className="account-labels desc-label">{item.name}</label>
                                     </div>
                                 </div>
 
                                 <div className="email-div">
                                     <div className='rowC'>
                                         <label className="account-labels menu-label">Description</label>
-                                        <label style={{whiteSpace: 'nowrap', marginLeft: "-1px"}} className="account-labels desc-label"
+                                        <label style={{whiteSpace: 'nowrap', marginLeft: "-1px"}}
+                                               className="account-labels desc-label"
                                                name="descriptionStored">{item.description}</label>
                                     </div>
                                 </div>
@@ -296,16 +303,19 @@ class Restaurant extends Component {
                                 </div>
 
                                 <div className='rowC'>
-                                    <label style={{marginRight: "10px"}} className="account-labels menu-label">Quantity</label>
+                                    <label style={{marginRight: "10px"}}
+                                           className="account-labels menu-label">Quantity</label>
                                     <div className="input-email">
-                                        <input style={{marginLeft: "-1px"}} className="email account-input" type="input" name="quantity"/>
+                                        <input style={{marginLeft: "-1px"}} className="email account-input" type="input"
+                                               name="quantity"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className='rowC'>
-                            <Button style={{marginLeft: "300px"}}  type="submit" variant="primary" className="menu-btn">Add item</Button>
+                            <Button style={{marginLeft: "300px"}} type="submit" variant="primary" className="menu-btn">Add
+                                item</Button>
                         </div>
 
                     </form>
@@ -315,9 +325,9 @@ class Restaurant extends Component {
         });
 
         return <div>
-                <h2>{currentTab.name}</h2>
-                <ul className="ul li">{renderTodos}</ul>
-                </div>;
+            <h2>{currentTab.name}</h2>
+            <ul className="ul li">{renderTodos}</ul>
+        </div>;
 
     }
 
@@ -359,7 +369,7 @@ class Restaurant extends Component {
                 {/*{this.paginationBasic()}*/}
                 <div>
                     <Pagination onClick={this.pageChanged}>{this.props.pageItems}</Pagination>
-                    <br />
+                    <br/>
                 </div>
 
             </div>

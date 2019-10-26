@@ -13,6 +13,8 @@ import {Nav, Navbar} from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 
 import axios from 'axios';
+import HelpPage from "../OwnerPages/HelpPage";
+import ChatPage from "../OwnerPages/ChatPage";
 
 axios.defaults.withCredentials = true;
 
@@ -67,6 +69,8 @@ class HomeOwner extends Component {
 
                         </Nav>
                         <Nav className="ml-auto">
+                            <Nav.Link as={NavLink} to='/homeOwner/help'>Help</Nav.Link>
+                            <Nav.Link as={NavLink} to='/homeOwner/chat'>Chat</Nav.Link>
                             <Nav.Link as={NavLink} to='/homeOwner/profileOwner/'>Profile</Nav.Link>
                             <Nav.Link as={NavLink} to='/homeOwner/signOut/'>SignOut</Nav.Link>
                         </Nav>
@@ -80,6 +84,8 @@ class HomeOwner extends Component {
                         <Route exact path='/homeOwner/menu/' component={Menu}/>
                         <Route exact path='/homeOwner/profileOwner/' component={ProfileOwner}/>
                         <Route exact path='/homeOwner/signOut/' component={SignOut}/>
+                        <Route exact path='/homeOwner/help' component={HelpPage}/>
+                        <Route exact path='/homeOwner/chat' component={ChatPage}/>
                     </Switch>
                 </div>
                 {((this.props.location.pathname === "/homeOwner") || (this.props.location.pathname === "/homeOwner/")) &&

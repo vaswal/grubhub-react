@@ -1,5 +1,14 @@
-import {PLACE_ORDER, PLACE_ORDER_ERROR, GET_MENU_ITEMS, ON_CLICK_SECTION, PAGE_CHANGED, SEARCH_ITEM, FILTER_RESTAURANTS,
-    GET_ORDERS_BY_STATUS, GET_ORDERS_OF_ALL_STATUS, ON_DRAG_END} from "../constants/action-types";
+import {
+    FILTER_RESTAURANTS,
+    GET_MENU_ITEMS,
+    GET_ORDERS_BY_STATUS,
+    ON_CLICK_SECTION,
+    ON_DRAG_END,
+    PAGE_CHANGED,
+    PLACE_ORDER,
+    PLACE_ORDER_ERROR,
+    SEARCH_ITEM
+} from "../constants/action-types";
 import {HOSTNMAE} from "../../components/Constants/Constants";
 import axios from 'axios';
 
@@ -36,7 +45,7 @@ export function getOrdersByStatus(payload) {
                 const responseEnriched = payload;
                 responseEnriched.data = response.data
 
-                    // Object.assign({}, response, payload)
+                // Object.assign({}, response, payload)
                 console.log("responseEnriched")
                 console.log(responseEnriched)
 
@@ -181,8 +190,10 @@ const placeOrderError = (response) => {
     //
     // this.setState({updateItemSuccess: false});
 
-    return {type: PLACE_ORDER_ERROR, payload: {
+    return {
+        type: PLACE_ORDER_ERROR, payload: {
             placeOrderSuccess: false,
             placeOrderMessage: "Error in placing order"
-        }}
+        }
+    }
 };

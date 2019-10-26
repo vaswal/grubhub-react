@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {GiftedChat} from "react-web-gifted-chat";
-import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -11,13 +10,13 @@ import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import {connect} from "react-redux";
-import {getChats, sendMessage} from "../../js/actions/chatActions";
+import {getChats, sendMessage} from "../../js/actions/ownerChatActions";
 
 function mapStateToProps(store) {
     return {
-        chats: store.chat.chats,
-        messages: store.chat.messages,
-        currentChatId: store.chat.currentChatId,
+        chats: store.ownerChat.chats,
+        messages: store.ownerChat.messages,
+        currentChatId: store.ownerChat.currentChatId,
     }
 }
 
@@ -34,7 +33,7 @@ class ChatPage extends Component {
         super(props);
         this.state = {
             chatUser: {
-                id: 1,
+                _id: 2,
                 name: 'Vini',
                 avatar: 'https://facebook.github.io/react/img/logo_og.png',
             }
@@ -61,7 +60,7 @@ class ChatPage extends Component {
         payload.buyer_id = selectedOrder.buyer_id;
         payload.chat_id = this.props.currentChatId;
         payload.message = messages[0];
-        payload.userType = "buyer";
+        payload.userType = "owner";
 
         this.props.sendMessage(payload);
     }
@@ -80,7 +79,7 @@ class ChatPage extends Component {
         // __v: 0
         // _id: "5daebc962afc4d4c1f2e0cbf"
         const msg = {
-            id: uuid(),
+            _id: uuid(),
             text: 'What can I do for you?',
             createdAt: new Date(),
             user: {
@@ -88,7 +87,6 @@ class ChatPage extends Component {
                 name: selectedOrder.buyer_id + "name"
             }
         };
-
 
         const payload = {};
         payload.order_id = selectedOrder._id;
@@ -102,43 +100,35 @@ class ChatPage extends Component {
         payload.status = selectedOrder.status;
         payload.owner_id = selectedOrder.owner_id;
         payload.price = selectedOrder.price;
-        payload.userType = "buyer";
+        payload.userType = "owner";
 
         this.props.getChats(payload);
     }
 
-    renderSignOutButton() {
-        if (this.state.isAuthenticated) {
-            return <Button onClick={() => this.signOut()}>Sign out</Button>;
-        }
-        return null;
-    }
-
     renderChat() {
-        console.log("this.props.messages");
-        console.log(this.props.messages);
-
-        const msgs = [];
-        const msg = {
-            id: 15,
-            text: 'Sure I can do that for you',
-            createdAt: new Date(),
-            user: {
-                _id: 2,
-                name: 'Vini',
-                avatar: 'https://facebook.github.io/react/img/logo_og.png',
-            }
-        };
-
-        msgs.push(msg);
-        console.log("msgs");
-        console.log(msgs);
+        // console.log("this.props.messages");
+        // console.log(this.props.messages);
+        //
+        // const msgs = [];
+        // const msg = {
+        //     id: 15,
+        //     text: 'Sure I can do that for you',
+        //     createdAt: new Date(),
+        //     user: {
+        //         _id: 2,
+        //         name: 'Vini',
+        //         avatar: 'https://facebook.github.io/react/img/logo_og.png',
+        //     }
+        // };
+        //
+        // msgs.push(msg);
+        // console.log("msgs");
+        // console.log(msgs);
 
 
         return (
             <GiftedChat
                 user={this.state.chatUser}
-                //messages={msgs.slice().reverse()}
                 messages={this.props.messages.slice().reverse()}
                 onSend={messages => this.onSend(messages)}
             />
@@ -203,7 +193,6 @@ class ChatPage extends Component {
     render() {
         return (
             <div style={styles.container}>
-                {/*{this.renderPopup()}*/}
                 <div style={styles.channelList}>
                     {this.renderChannelsHeader()}
                     {this.renderChannels()}
