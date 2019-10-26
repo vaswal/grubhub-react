@@ -70,6 +70,29 @@ router.post('/section/add', function(req, res) {
         .catch(res.send("Error in saving section"));
 });
 
+router.post('/order/update', function(req, res) {
+    const order = Order(req.body)
+    console.log("order")
+    console.log(order)
+
+    Order.findOneAndUpdate({_id: order._id}, order, { upsert: true })
+        .then(() => {res.send("Updated")})
+        // Deal with the response data/error
+});
+
+    // return order.save()
+    //     .then(() => {res.send({
+    //         placeOrderSuccess: true,
+    //         placeOrderMessage: "Successfully placed order"
+    //     })})
+    //     .catch((error) => {
+    //         console.log("error")
+    //         console.log(error)
+    //         res.send({
+    //             placeOrderSuccess: false,
+    //             placeOrderMessage: "Error in placing order"
+    //         })});
+
 router.post('/order/add', function(req, res) {
     const order = Order(req.body)
 
@@ -194,8 +217,6 @@ router.post('/getByOwnerMongo', function(req, res) {
 
     Order.find({owner_id: req.body.userId})
         .then((orders) => {
-            console.log("orders");
-            console.log(orders);
             res.send(orders)
         })
         .catch(() => {console.log("Error in getByOwnerMongo")})

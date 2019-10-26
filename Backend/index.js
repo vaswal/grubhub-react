@@ -75,7 +75,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //mongoose.connect('mongodb://localhost:27017/grubhub')
-mongoose.connect("mongodb+srv://root:MyPasswordIsStrong123@mongocluster-nhhlj.mongodb.net/grubhub", {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect("mongodb+srv://root:MyPasswordIsStrong123@mongocluster-nhhlj.mongodb.net/grubhub",
+    {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
     .then(() =>  console.log('Connection succesful'))
     .catch((err) => console.error(err));
 
