@@ -2,7 +2,7 @@ var express = require('express');
 const mysql = require('mysql');
 var router = express.Router();
 const pool = require("../DbConnection");
-const uuid = require("uuid")
+const uuid = require("uuid");
 const passport = require('passport');
 const mongoose = require('mongoose');
 const auth = require('./Auth');
@@ -16,7 +16,7 @@ router.post('/savemongo', auth.optional, (req, res, next) => {
     console.log("save req");
     console.log(req.body);
 
-    const { body: { user } } = req;
+    const {body: {user}} = req;
 
     console.log("save user");
     console.log(user);
@@ -34,11 +34,11 @@ router.post('/savemongo', auth.optional, (req, res, next) => {
 });
 
 //Iter 3
-router.post('/loginpassport', auth.optional, function(req, res) {
+router.post('/loginpassport', auth.optional, function (req, res) {
     console.log("loginpassport req");
     console.log(req.body);
 
-    return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
+    return passport.authenticate('local', {session: false}, (err, passportUser, info) => {
         console.log("Inside");
         console.log("passportUser");
         console.log(passportUser);
@@ -53,11 +53,11 @@ router.post('/loginpassport', auth.optional, function(req, res) {
             user.token = passportUser.generateJWT();
             user.userType = req.body.userType;
 
-            console.log("user")
-            console.log(user)
+            console.log("user");
+            console.log(user);
 
-            console.log("user.toAuthJSON()")
-            console.log(user.toAuthJSON())
+            console.log("user.toAuthJSON()");
+            console.log(user.toAuthJSON());
 
             return res.send({
                 signinSuccess: true,
@@ -72,13 +72,13 @@ router.post('/loginpassport', auth.optional, function(req, res) {
 
 
 //Route to handle Post Request Call
-router.post('/login', function(req,res){
+router.post('/login', function (req, res) {
     console.log("Inside Login Post Request");
     let body = {
         email: req.body.emailId,
         password: req.body.password,
         userType: req.body.userType
-    }
+    };
     console.log("userType: " + body.userType);
 
     pool.query(`SELECT id FROM ${body.userType} where email=? and password=?`, [body.email, body.password], (err, result) => {
@@ -89,14 +89,14 @@ router.post('/login', function(req,res){
                 signinMessage: "SignUp Failed",
             })
         } else {
-            console.log('Result: ' +  JSON.stringify(result));
+            console.log('Result: ' + JSON.stringify(result));
             const length = result.length;
 
             if (length > 0) {
                 const data = {
                     userType: body.userType,
                     userId: result[0].id
-                }
+                };
 
                 //res.cookie('cookie', JSON.stringify(data), {maxAge: 900000, httpOnly: false, path : '/'});
                 //res.cookie('cookie',"buyer", {id:"some"},{maxAge: 900000, httpOnly: false, path : '/'});
@@ -116,13 +116,13 @@ router.post('/login', function(req,res){
     });
 });
 
-router.get('/test', function(req, res) {
+router.get('/test', function (req, res) {
     res.send("hello");
 });
 
 
-router.post('/create', function(req, res) {
-    console.log("Inside createBook")
+router.post('/create', function (req, res) {
+    console.log("Inside createBook");
     console.log("createBook ", req.body);
 
     let body = {
@@ -131,8 +131,8 @@ router.post('/create', function(req, res) {
         lastname: req.body.lastName,
         email: req.body.emailId,
         password: req.body.password
-    }
-    console.log("Inside Backend Account.js", body)
+    };
+    console.log("Inside Backend Account.js", body);
 
     pool.query(`SELECT COUNT (*) FROM buyer where email=?`, [body.email], (err, result) => {
         if (err) {
@@ -142,7 +142,7 @@ router.post('/create', function(req, res) {
                 signupMessage: "SignUp Failed"
             })
         } else {
-            console.log('Result: ' +  JSON.stringify(result));
+            console.log('Result: ' + JSON.stringify(result));
             const count = result[0].count;
 
             if (count > 0) {
@@ -171,8 +171,8 @@ router.post('/create', function(req, res) {
     });
 });
 
-router.post('/createOwner', function(req, res) {
-    console.log("Inside createBook")
+router.post('/createOwner', function (req, res) {
+    console.log("Inside createBook");
     console.log("createBook ", req.body);
 
     let body = {
@@ -184,8 +184,8 @@ router.post('/createOwner', function(req, res) {
         phonenumber: req.body.phoneNumber,
         restaurantname: req.body.restaurantName,
         cuisine: req.body.cuisine
-    }
-    console.log("Inside createOwner", body)
+    };
+    console.log("Inside createOwner", body);
 
     pool.query(`SELECT COUNT (*) as count FROM owner where email=?`, [body.email], (err, result) => {
         if (err) {
@@ -195,7 +195,7 @@ router.post('/createOwner', function(req, res) {
                 signupMessage: "SignUp Failed"
             })
         } else {
-            console.log('Result: ' +  JSON.stringify(result));
+            console.log('Result: ' + JSON.stringify(result));
             const count = result[0].count;
 
             if (count > 0) {

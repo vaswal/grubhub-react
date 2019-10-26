@@ -59,10 +59,12 @@ app.use(function(req, res, next) {
 const accessBasePath = '/access';
 const profileBasePath = '/profile';
 const ordersBasePath = '/orders';
+const chatBasePath = '/chats';
 
 const accessRoutes = require('./src/routes/Access');
 const profileRoutes = require('./src/routes/Profile');
 const orderRoutes = require('./src/routes/Orders');
+const chatRoutes = require('./src/routes/Chat');
 
 //use cors to allow cross origin resource sharing
 //app.use(cors({ origin: 'http://18.237.90.21:3000', credentials: true }));
@@ -83,11 +85,10 @@ mongoose.connect("mongodb+srv://root:MyPasswordIsStrong123@mongocluster-nhhlj.mo
 require('./src/models/Buyer');
 require('./src/config/Passport');
 
-
 app.use(accessBasePath, accessRoutes);
-
 app.use(profileBasePath, profileRoutes);
 app.use(ordersBasePath, orderRoutes);
+app.use(chatBasePath, chatRoutes);
 app.use(express.static('routes'));
 app.use(express.static('files'));
 

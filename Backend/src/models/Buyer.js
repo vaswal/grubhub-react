@@ -12,17 +12,17 @@ const BuyerSchema = new Schema({
     salt: String,
 });
 
-BuyerSchema.methods.setPassword = function(password) {
+BuyerSchema.methods.setPassword = function (password) {
     this.salt = crypto.randomBytes(16).toString('hex');
     this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
 };
 
-BuyerSchema.methods.validatePassword = function(password) {
+BuyerSchema.methods.validatePassword = function (password) {
     const hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
     return this.hash === hash;
 };
 
-BuyerSchema.methods.generateJWT = function() {
+BuyerSchema.methods.generateJWT = function () {
     const today = new Date();
     const expirationDate = new Date(today);
     expirationDate.setDate(today.getDate() + 60);
@@ -32,9 +32,9 @@ BuyerSchema.methods.generateJWT = function() {
         id: this._id,
         exp: parseInt(expirationDate.getTime() / 1, 10),
     }, 'secret');
-}
+};
 
-BuyerSchema.methods.toAuthJSON = function() {
+BuyerSchema.methods.toAuthJSON = function () {
     return {
         _id: this._id,
         userType: "buyer",

@@ -7,7 +7,8 @@ const OrderSchema = new Schema({
     items: String,
     status: String,
     owner_id: String,
-    buyer_id: String
+    buyer_id: String,
+    price: String
 });
 
 mongoose.model('grubhub_order', OrderSchema);

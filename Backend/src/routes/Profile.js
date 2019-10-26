@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 
 require('../models/Buyer');
 
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
     res.send("hello from profile");
 });
 const Buyer = mongoose.model('Buyer');
@@ -32,9 +32,9 @@ queryMap.set("GET_BUYER_IMAGE", 'SELECT image from buyer WHERE id=?');
 //         .catch(() => {console.log("Error in getByOwnerMongo")})
 // });
 
-router.post('/getByQuery', function(req, res) {
+router.post('/getByQuery', function (req, res) {
     console.log("Inside getByOwner");
-    console.log("req.body")
+    console.log("req.body");
     console.log(req.body);
 
     const query = queryMap.get(req.body.queryName);
@@ -45,7 +45,7 @@ router.post('/getByQuery', function(req, res) {
             console.log(err);
             res.send(err);
         } else {
-            console.log('Result: ' +  JSON.stringify(result));
+            console.log('Result: ' + JSON.stringify(result));
             res.send(result)
         }
     });
@@ -73,18 +73,20 @@ router.post('/getByQuery', function(req, res) {
 //     });
 // });
 
-router.post('/get', auth.optional, function(req, res) {
+router.post('/get', auth.optional, function (req, res) {
     console.log("profile /get");
-    console.log("req.body")
+    console.log("req.body");
     console.log(req.body);
 
     Buyer.find({_id: req.body.buyerId})
-    .then((buyer) => {
-        console.log("buyer")
-        console.log(buyer)
-        res.send(buyer)
-    })
-    .catch(() => {console.log("Error in getByOwnerMongo")})
+        .then((buyer) => {
+            console.log("buyer");
+            console.log(buyer);
+            res.send(buyer)
+        })
+        .catch(() => {
+            console.log("Error in getByOwnerMongo")
+        })
 
 
     // pool.query(`SELECT * FROM ${body.userType} where id=?`, [body.userId], (err, result) => {
@@ -98,8 +100,8 @@ router.post('/get', auth.optional, function(req, res) {
     // });
 });
 
-router.post('/getImage', function(req, res) {
-    console.log("Inside /image")
+router.post('/getImage', function (req, res) {
+    console.log("Inside /image");
     console.log(req.body);
 
     const query = queryMap.get(req.body.queryName);
@@ -110,9 +112,9 @@ router.post('/getImage', function(req, res) {
             console.log(err);
             res.send(err);
         } else {
-            console.log('Result: ' +  result[0].image);
+            console.log('Result: ' + result[0].image);
             if (result[0].image !== null) {
-                console.log("Non null image")
+                console.log("Non null image");
                 // const form = new FormData();
                 // form.append('my_file', fs.createReadStream(result[0].image));
                 // res.set({'Content-Type': 'image/png'});
@@ -122,7 +124,7 @@ router.post('/getImage', function(req, res) {
                 //res.send(new Buffer.from(bitmap).toString('base64'));
                 res.send(result[0].image)
             } else {
-                console.log("nullImage")
+                console.log("nullImage");
                 res.send("nullImage");
             }
 
@@ -135,29 +137,29 @@ const storage = multer.diskStorage({
         cb(null, '/Users/vijendra4/GoogleDrive/sjsu/273/lab1/grubhub/Frontend/src/images/grubhub')
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname )
+        cb(null, file.originalname)
     }
-})
+});
 
 
 //const upload = multer({ storage: storage }).single('file');
-const upload = multer({ storage: storage }).single('file');
+const upload = multer({storage: storage}).single('file');
 
-router.post('/image', function(req, res) {
+router.post('/image', function (req, res) {
     upload(req, res, function (err) {
-        console.log("Inside /image")
+        console.log("Inside /image");
         console.log(req.body);
         console.log(req.body.userId);
-        console.log("File")
+        console.log("File");
         console.log(req.file);
-        console.log("userId")
+        console.log("userId");
         console.log(req.userId);
 
         if (err instanceof multer.MulterError) {
-            console.log(err)
+            console.log(err);
             return res.status(500).json(err)
         } else if (err) {
-            console.log(err)
+            console.log(err);
             return res.status(500).json(err)
         }
 
@@ -171,7 +173,7 @@ router.post('/image', function(req, res) {
                 console.log(err);
                 res.send(err);
             } else {
-                console.log('Result: ' +  JSON.stringify(result));
+                console.log('Result: ' + JSON.stringify(result));
             }
         });
 
@@ -179,7 +181,7 @@ router.post('/image', function(req, res) {
     })
 });
 
-router.post('/update', function(req, res) {
+router.post('/update', function (req, res) {
     console.log("Inside updateBuyerProfile Post Request");
     console.log("req.body");
     console.log(req.body);
@@ -193,7 +195,7 @@ router.post('/update', function(req, res) {
                     updateMessage: "Unsuccessful Update"
                 });
             } else {
-                console.log('Result: ' +  JSON.stringify(result));
+                console.log('Result: ' + JSON.stringify(result));
                 res.send({
                     updateSuccess: true,
                     updateMessage: "Successful Update"
@@ -210,7 +212,7 @@ router.post('/update', function(req, res) {
                     updateMessage: "Unsuccessful Update"
                 });
             } else {
-                console.log('Result: ' +  JSON.stringify(result));
+                console.log('Result: ' + JSON.stringify(result));
                 res.send({
                     updateSuccess: true,
                     updateMessage: "Successful Update"

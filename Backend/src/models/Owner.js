@@ -16,17 +16,17 @@ const OwnerSchema = new Schema({
     salt: String
 });
 
-OwnerSchema.methods.setPassword = function(password) {
+OwnerSchema.methods.setPassword = function (password) {
     this.salt = crypto.randomBytes(16).toString('hex');
     this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
 };
 
-OwnerSchema.methods.validatePassword = function(password) {
+OwnerSchema.methods.validatePassword = function (password) {
     const hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
     return this.hash === hash;
 };
 
-OwnerSchema.methods.generateJWT = function() {
+OwnerSchema.methods.generateJWT = function () {
     const today = new Date();
     const expirationDate = new Date(today);
     expirationDate.setDate(today.getDate() + 60);
@@ -36,9 +36,9 @@ OwnerSchema.methods.generateJWT = function() {
         id: this._id,
         exp: parseInt(expirationDate.getTime() / 1000, 10),
     }, 'secret');
-}
+};
 
-OwnerSchema.methods.toAuthJSON = function() {
+OwnerSchema.methods.toAuthJSON = function () {
     return {
         _id: this._id,
         userType: "owner",
