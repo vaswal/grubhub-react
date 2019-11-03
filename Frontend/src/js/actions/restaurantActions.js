@@ -14,8 +14,6 @@ import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 
-//axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-
 export function onDragEnd(payload) {
     return (dispatch) => {
         dispatch(onDragEndUpdate(payload));
@@ -57,7 +55,6 @@ export function getOrdersByStatus(payload) {
 const getOrdersByStatusUpdate = (returnedData) => {
     console.log("getOrdersByStatusUpdate");
     console.log(returnedData);
-
 
     return {type: GET_ORDERS_BY_STATUS, payload: returnedData}
 };

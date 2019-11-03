@@ -9,6 +9,7 @@ const mysql = require('mysql');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
+const kafka = require('./src/routes/kafka/client');
 
 // const connection = mysql.createConnection({
 //     host: 'localhost',
@@ -94,6 +95,29 @@ app.use(express.static('files'));
 
 app.get('/', function(req, res) {
     res.send("hello");
+});
+
+app.post('/book', function(req, res){
+
+    kafka.make_request('post_book',req.body, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            console.log("Inside err");
+            res.json({
+                status:"error",
+                msg:"System Error, Try Again."
+            })
+        }else{
+            console.log("Inside else");
+            res.json({
+                updatedList:results
+            });
+
+            res.end();
+        }
+
+    });
 });
 
 //start your server on port 3001

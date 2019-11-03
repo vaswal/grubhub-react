@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const auth = require('./Auth');
 require('../models/Buyer');
 require('../models/Owner');
+var kafka = require('./kafka/client');
 
 const Buyer = mongoose.model('Buyer');
 const Owner = mongoose.model('Owner');
@@ -68,6 +69,25 @@ router.post('/loginpassport', auth.optional, function (req, res) {
 
         return res.send('Error');
     })(req, res);
+});
+
+//Iter 3
+router.post('/loginkafka', auth.optional, function (req, res) {
+    console.log("loginkafka req");
+    console.log(req.body);
+
+    kafka.make_request('access', {"path":"signin", "body":req.body}, function(err,result) {
+        console.log('in result');
+        console.log(result);
+        if (err){
+            res.send({
+                signinSuccess:false,
+                signinMessage:"Sign In Failed"
+            })
+        } else {
+            res.send(result);
+        }
+    });
 });
 
 

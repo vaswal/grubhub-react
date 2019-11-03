@@ -22,3 +22,4 @@ export const GET_CHAT = "GET_CHAT";
 export const SEND_MESSAGE = "SEND_MESSAGE";
 export const GET_CHAT_OWNER = "GET_CHAT_OWNER";
 export const SEND_MESSAGE_OWNER = "SEND_MESSAGE_OWNER";
+export const DELETE_SECTION = "DELETE_SECTION";

@@ -13,8 +13,11 @@ export function signInMongo(payload) {
     return (dispatch) => {
         console.log("Inside signInMongo");
 
-        axios.post(`http://${HOSTNMAE}:3001/access/loginpassport`, payload)
-            .then((response) => dispatch(signIn(response.data)))
+        axios.post(`http://${HOSTNMAE}:3001/access/loginkafka`, payload)
+            .then((response) => dispatch(signIn(response.data)));
+
+        // axios.post(`http://${HOSTNMAE}:3001/access/loginpassport`, payload)
+        //     .then((response) => dispatch(signIn(response.data)))
     }
 }
 

@@ -7,7 +7,6 @@ import axios from 'axios';
 import {connect} from "react-redux";
 import {changeOrderStatus, getOrders} from "../../js/actions/ownerActions";
 
-axios.defaults.withCredentials = true;
 
 function mapStateToProps(store) {
     return {
@@ -24,7 +23,6 @@ function mapDispatchToProps(dispatch) {
         getOrders: (payload) => dispatch(getOrders(payload)),
         changeOrderStatus: (payload) => dispatch(changeOrderStatus(payload))
     };
-
 }
 
 class Orders extends Component {

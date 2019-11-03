@@ -47,40 +47,6 @@ class HelpPage extends Component {
     populateSection = () => {
         console.log("populateSection");
 
-        // if (this.props.allOrders.length === 0) {
-        //     return <div>
-        //         <Card style={{ width: '18rem' }}>
-        //             <Card.Img variant="top" src={require("../../images/restaurant-logo.png")} />
-        //             <Card.Body>
-        //                 <Card.Title>Card Title</Card.Title>
-        //                 <Card.Text>
-        //                     Some quick example text to build on the card title and make up the bulk of
-        //                     the card's content.
-        //                 </Card.Text>
-        //                 <Button variant="primary" type="button" onClick={this.goToChat} >Chat for help</Button>
-        //             </Card.Body>
-        //         </Card>
-        //     </div>;
-        // }
-
-        // console.log("currentTab")
-        // console.log(currentTab)
-        //
-        // console.log("this.state.tabs")
-        // console.log(this.props.tabs)
-        // const items = this.props.allItems.filter(item => {return (item.section === currentTab.name)});
-        //
-        // console.log("this.state.pageItems")
-        // console.log(this.props.pageItems)
-        //
-        // const {active, todosPerPage} = this.props;
-        //
-        //
-        // // Logic for displaying todos
-        // const indexOfLastTodo = active * todosPerPage;
-        // const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-        // const currentTodos = items.slice(indexOfFirstTodo, indexOfLastTodo);
-
         const renderTodos = this.props.allOrders.map((order, index) => {
             // const items = JSON.parse(order.items);
             console.log("order")

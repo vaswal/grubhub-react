@@ -6,8 +6,26 @@ import "../../styles/Menu.css"
 import {HOSTNMAE} from "../../components/Constants/Constants";
 import {Redirect} from 'react-router';
 import axios from 'axios';
+import {connect} from "react-redux";
+import {deleteSection, getOrders, addSection} from "../../js/actions/ownerActions";
 
-axios.defaults.withCredentials = true;
+function mapStateToProps(store) {
+    return {
+        newOrders: store.owner.newOrders,
+        preparingOrders: store.owner.preparingOrders,
+        readyOrders: store.owner.readyOrders,
+        deliveredOrders: store.owner.deliveredOrders,
+        canceledOrders: store.owner.canceledOrders
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        getOrders: (payload) => dispatch(getOrders(payload)),
+        deleteSection: (payload) => dispatch(deleteSection(payload)),
+        addSection: (payload) => dispatch(addSection(payload))
+    };
+}
 
 class Menu extends Component {
     constructor(props) {
@@ -109,7 +127,7 @@ class Menu extends Component {
     };
 
     handleAddTab = () => {
-        const {tabs} = this.state;
+        const {tabs} = this.props;
 
         const newTabObject = {
             id: uuid(),
@@ -117,40 +135,62 @@ class Menu extends Component {
             content: ``
         };
 
-        this.setState({
-            tabs: [...tabs, newTabObject],
-            currentTab: newTabObject,
-            editMode: false,
-            editTabNameMode: false
-        });
+        const payload = {};
+        payload.tabs = [...tabs, newTabObject];
+        payload.currentTab = newTabObject;
+        payload.editMode = false;
+        payload.editTabNameMode = false;
+
+        this.props.addSection(payload);
+
+        // const {tabs} = this.state;
+        //
+        // const newTabObject = {
+        //     id: uuid(),
+        //     name: `Section ${tabs.length + 1}`,
+        //     content: ``
+        // };
+
+        // this.setState({
+        //     tabs: [...tabs, newTabObject],
+        //     currentTab: newTabObject,
+        //     editMode: false,
+        //     editTabNameMode: false
+        // });
     };
 
     handleDeleteTab = tabToDelete => {
-        const {tabs} = this.state;
-        const tabToDeleteIndex = tabs.findIndex(tab => tab.id === tabToDelete.id);
-
-        const updatedTabs = tabs.filter((tab, index) => {
-            return index !== tabToDeleteIndex;
-        });
-
-        const previousTab =
-            tabs[tabToDeleteIndex - 1] || tabs[tabToDeleteIndex + 1] || {};
-
-        this.setState({
-            tabs: updatedTabs,
-            editMode: false,
-            editTabNameMode: false,
-            currentTab: previousTab
-        });
-
         const payload = {};
-        payload.queryName = "DELETE_SECTION";
-        payload.arguments = [this.state.currentTab.name, localStorage.getItem('userId')];
+        payload.section = this.state.currentTab.name;
+        payload.userId = localStorage.getItem('_id');
 
-        axios.post(`http://${HOSTNMAE}:3001/orders/update`, payload)
-            .then((response) => {
+        this.props.deleteSection(payload);
 
-            });
+        // const {tabs} = this.state;
+        // const tabToDeleteIndex = tabs.findIndex(tab => tab.id === tabToDelete.id);
+        //
+        // const updatedTabs = tabs.filter((tab, index) => {
+        //     return index !== tabToDeleteIndex;
+        // });
+        //
+        // const previousTab =
+        //     tabs[tabToDeleteIndex - 1] || tabs[tabToDeleteIndex + 1] || {};
+        //
+        // this.setState({
+        //     tabs: updatedTabs,
+        //     editMode: false,
+        //     editTabNameMode: false,
+        //     currentTab: previousTab
+        // });
+        //
+        // const payload = {};
+        // payload.queryName = "DELETE_SECTION";
+        // payload.arguments = [this.state.currentTab.name, localStorage.getItem('userId')];
+        //
+        // axios.post(`http://${HOSTNMAE}:3001/orders/update`, payload)
+        //     .then((response) => {
+        //
+        //     });
     };
 
     setEditMode = () => {
@@ -560,4 +600,4 @@ class Menu extends Component {
     }
 }
 
-export default Menu;
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);

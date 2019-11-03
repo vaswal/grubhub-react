@@ -1,4 +1,4 @@
-import {CHANGE_ORDER_STATUS, GET_ORDERS_OF_ALL_STATUS_OWNER} from "../constants/action-types";
+import {CHANGE_ORDER_STATUS, GET_ORDERS_OF_ALL_STATUS_OWNER, DELETE_SECTION} from "../constants/action-types";
 import {HOSTNMAE} from "../../components/Constants/Constants";
 import axios from 'axios';
 
@@ -20,6 +20,36 @@ export function getOrders(payload) {
 
 const getOrdersUpdate = (returnedData) => {
     return {type: GET_ORDERS_OF_ALL_STATUS_OWNER, payload: returnedData}
+}
+
+export function deleteSection(payload) {
+    console.log("deleteSection")
+    console.log("payload")
+    console.log(payload)
+
+    return (dispatch) => {
+        axios.post(`http://${HOSTNMAE}:3001/orders/section/delete`, payload)
+            .then((response) => dispatch(deleteSectionUpdate(response.data)))
+    }
+}
+
+const deleteSectionUpdate = (returnedData) => {
+    return {type: DELETE_SECTION, payload: returnedData}
+}
+
+export function addSection(payload) {
+    console.log("deleteSection")
+    console.log("payload")
+    console.log(payload)
+
+    return (dispatch) => {
+        axios.post(`http://${HOSTNMAE}:3001/orders/section/add`, payload)
+            .then((response) => dispatch(addSectionUpdate(response.data)))
+    }
+}
+
+const addSectionUpdate = (returnedData) => {
+    return {type: DELETE_SECTION, payload: returnedData}
 }
 
 export function changeOrderStatus(payload) {

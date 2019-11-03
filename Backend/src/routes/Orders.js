@@ -6,6 +6,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
+var kafka = require('./kafka/client');
 
 
 require('../models/Section');
@@ -74,6 +75,17 @@ router.post('/section/add', function (req, res) {
         .catch(res.send("Error in saving section"));
 });
 
+
+router.post('/section/delete', function (req, res) {
+    const section = Section(req.body);
+
+    return section.delete()
+        .then(() => {
+            res.send("Deleted section")
+        })
+        .catch(res.send("Error in deleting section"));
+});
+
 router.post('/order/update', function (req, res) {
     const order = Order(req.body);
     console.log("order");
@@ -86,37 +98,35 @@ router.post('/order/update', function (req, res) {
     // Deal with the response data/error
 });
 
-// return order.save()
-//     .then(() => {res.send({
-//         placeOrderSuccess: true,
-//         placeOrderMessage: "Successfully placed order"
-//     })})
-//     .catch((error) => {
-//         console.log("error")
-//         console.log(error)
-//         res.send({
-//             placeOrderSuccess: false,
-//             placeOrderMessage: "Error in placing order"
-//         })});
-
 router.post('/order/add', function (req, res) {
     const order = Order(req.body);
 
-    return order.save()
-        .then(() => {
-            res.send({
-                placeOrderSuccess: true,
-                placeOrderMessage: "Successfully placed order"
-            })
-        })
-        .catch((error) => {
-            console.log("error");
-            console.log(error);
-            res.send({
-                placeOrderSuccess: false,
-                placeOrderMessage: "Error in placing order"
-            })
-        });
+    kafka.make_request('order', {"path":"order/add", "body": req.body}, function(err,result) {
+        console.log('in result');
+        console.log(result);
+
+        if (err){
+            console.log("Error in getByOwnerMongo")
+        } else {
+            res.send(result);
+        }
+    });
+
+    // return order.save()
+    //     .then(() => {
+    //         res.send({
+    //             placeOrderSuccess: true,
+    //             placeOrderMessage: "Successfully placed order"
+    //         })
+    //     })
+    //     .catch((error) => {
+    //         console.log("error");
+    //         console.log(error);
+    //         res.send({
+    //             placeOrderSuccess: false,
+    //             placeOrderMessage: "Error in placing order"
+    //         })
+    //     });
 });
 
 router.post('/order/get', function (req, res) {
@@ -163,15 +173,26 @@ router.post('/menu_item/add', function (req, res) {
 });
 
 router.post('/menu_item/get', function (req, res) {
-    MenuItem.find({owner_id: req.body.owner_id})
-        .then((menu_items) => {
-            console.log("menu_items");
-            console.log(menu_items);
-            res.send(menu_items)
-        })
-        .catch(() => {
+    kafka.make_request('order', {"path":"menu_item/get", "body": req.body}, function(err,result) {
+        console.log('in result');
+        console.log(result);
+
+        if (err){
             console.log("Error in getByOwnerMongo")
-        })
+        } else {
+            res.send(result);
+        }
+    });
+
+    // MenuItem.find({owner_id: req.body.owner_id})
+    //     .then((menu_items) => {
+    //         console.log("menu_items");
+    //         console.log(menu_items);
+    //         res.send(menu_items)
+    //     })
+    //     .catch(() => {
+    //         console.log("Error in getByOwnerMongo")
+    //     })
 
 });
 
@@ -179,23 +200,34 @@ router.post('/menu_item/search', function (req, res) {
     console.log("menu_item/search");
     console.log(req.body);
 
-    MenuItem.find({name: {$regex: req.body.searchTerm, $options: 'i'}})
-        .then((menu_items) => {
-            console.log("menu_items");
-            console.log(menu_items);
+    kafka.make_request('order', {"path":"menu_item/search", "body": req.body}, function(err,result) {
+        console.log('in result');
+        console.log(result);
 
-            const owner_ids = menu_items.map(menu_item => menu_item.owner_id);
-
-            Owner.find({_id: {$in: owner_ids}})
-                .then((restaurants) => {
-                    console.log("restaurants");
-                    console.log(restaurants);
-                    res.send(restaurants)
-                })
-        })
-        .catch(() => {
+        if (err){
             console.log("Error in getByOwnerMongo")
-        })
+        } else {
+            res.send(result);
+        }
+    });
+
+    // MenuItem.find({name: {$regex: req.body.searchTerm, $options: 'i'}})
+    //     .then((menu_items) => {
+    //         console.log("menu_items");
+    //         console.log(menu_items);
+    //
+    //         const owner_ids = menu_items.map(menu_item => menu_item.owner_id);
+    //
+    //         Owner.find({_id: {$in: owner_ids}})
+    //             .then((restaurants) => {
+    //                 console.log("restaurants");
+    //                 console.log(restaurants);
+    //                 res.send(restaurants)
+    //             })
+    //     })
+    //     .catch(() => {
+    //         console.log("Error in getByOwnerMongo")
+    //     })
 
 });
 
@@ -219,29 +251,60 @@ router.post('/get/byBuyer', function (req, res) {
     console.log("req.body");
     console.log(req.body);
 
-    Order.find({buyer_id: req.body.userId})
-        .then((orders) => {
-            console.log("orders");
-            console.log(orders);
-            res.send(orders)
-        })
-        .catch(() => {
+    kafka.make_request('order', {"path":"get/byBuyer", "body": req.body}, function(err,result) {
+        console.log('in result');
+        console.log(result);
+
+        if (err){
             console.log("Error in getByOwnerMongo")
-        })
+        } else {
+            res.send(result);
+        }
+    });
+
+    //     Order.find({buyer_id: req.body.userId})
+//         .then((orders) => {
+//             console.log("orders");
+//             console.log(orders);
+//             res.send(orders)
+//         })
+//         .catch(() => {
+//             console.log("Error in getByOwnerMongo")
+//         })
 });
+
+// router.post('/getByOwnerMongo', function (req, res) {
+//     console.log("req.body");
+//     console.log(req.body);
+//
+//     Order.find({owner_id: req.body.userId})
+//         .then((orders) => {
+//             res.send(orders)
+//         })
+//         .catch(() => {
+//             console.log("Error in getByOwnerMongo")
+//         })
+// });
 
 router.post('/getByOwnerMongo', function (req, res) {
     console.log("req.body");
     console.log(req.body);
 
-    Order.find({owner_id: req.body.userId})
-        .then((orders) => {
-            res.send(orders)
-        })
-        .catch(() => {
-            console.log("Error in getByOwnerMongo")
-        })
+    kafka.make_request('orders', {"path":"getByOwnerMongo", "body":req.body}, function(err,result) {
+        console.log('in result');
+        console.log(result);
+
+        if (err){
+            console.log(err);
+            console.log("Answer not found");
+            res.status(400).json({ responseMessage: 'Answer not found' });
+        } else {
+            res.send(result);
+        }
+    });
 });
+
+
 
 router.post('/update', function (req, res) {
     console.log("Inside update");

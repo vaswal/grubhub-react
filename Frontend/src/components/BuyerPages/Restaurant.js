@@ -56,10 +56,12 @@ class Restaurant extends Component {
     }
 
     addToCart = (menu_item_id) => {
+        console.log("menu_item_id");
+        console.log(menu_item_id);
+
         return e => {
             e.preventDefault();
             this.setState({updateItemSuccess: null, placeOrderSuccess: null});
-            console.log(menu_item_id);
 
             const data = {};
             for (let i = 0; i < e.target.length; i++) {
@@ -67,8 +69,8 @@ class Restaurant extends Component {
                     data[e.target[i].name] = e.target[i].value;
                 }
             }
-            const addedItem = this.state.allItems.filter(function (item) {
-                return item.menu_item_id === menu_item_id;
+            const addedItem = this.props.allItems.filter(function (item) {
+                return item._id === menu_item_id;
             });
 
             console.log("addedItem");
@@ -80,6 +82,7 @@ class Restaurant extends Component {
                 quantity: parseInt(data.quantity, 10),
                 price: parseInt(addedItem[0].price, 10)
             };
+
             this.setState({cartItems: this.state.cartItems.concat(cartItem)});
         }
     };
@@ -108,8 +111,8 @@ class Restaurant extends Component {
     };
 
     getTotalPrice = () => {
-        // console.log("getTotalPrice");
-        // console.log(this.state.cartItems);
+        console.log("getTotalPrice");
+        console.log(this.state.cartItems);
         // console.log(this.state.cartItems.length);
 
         if (this.state.cartItems.length > 0) {
@@ -270,7 +273,7 @@ class Restaurant extends Component {
         const renderTodos = currentTodos.map((item, index) => {
             return <li key={index}>
                 <div className="menu">
-                    <form style={{marginTop: "30px"}} className="form" onSubmit={this.addToCart(item.menu_item_id)}>
+                    <form style={{marginTop: "30px"}} className="form" onSubmit={this.addToCart(item._id)}>
                         <div className='rowC'>
                             <div className="card-header"><img style={{width: "150px", height: "150px", margin: 0}}
                                                               src={require(`../../images/grubhub/${item.image}`)}/>
