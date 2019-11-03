@@ -77,30 +77,38 @@ router.post('/section/add', function (req, res) {
 
 
 router.post('/section/delete', function (req, res) {
-    const section = Section(req.body);
+    kafka.make_request('order', {"path":"section/delete", "body": req.body}, function(err,result) {
+        console.log('in result');
+        console.log(result);
 
-    return section.delete()
-        .then(() => {
-            res.send("Deleted section")
-        })
-        .catch(res.send("Error in deleting section"));
+        if (err){
+            console.log("Error in getByOwnerMongo")
+        } else {
+            res.send(result);
+        }
+    });
 });
 
 router.post('/order/update', function (req, res) {
+    console.log("req.body");
+    console.log(req.body);
     const order = Order(req.body);
     console.log("order");
     console.log(order);
 
-    Order.findOneAndUpdate({_id: order._id}, order, {upsert: true})
-        .then(() => {
-            res.send("Updated")
-        })
-    // Deal with the response data/error
+    kafka.make_request('order', {"path":"order/update", "body": req.body}, function(err,result) {
+        console.log('in result');
+        console.log(result);
+
+        if (err){
+            console.log("Error in getByOwnerMongo")
+        } else {
+            res.send(result);
+        }
+    });
 });
 
 router.post('/order/add', function (req, res) {
-    const order = Order(req.body);
-
     kafka.make_request('order', {"path":"order/add", "body": req.body}, function(err,result) {
         console.log('in result');
         console.log(result);
@@ -111,22 +119,6 @@ router.post('/order/add', function (req, res) {
             res.send(result);
         }
     });
-
-    // return order.save()
-    //     .then(() => {
-    //         res.send({
-    //             placeOrderSuccess: true,
-    //             placeOrderMessage: "Successfully placed order"
-    //         })
-    //     })
-    //     .catch((error) => {
-    //         console.log("error");
-    //         console.log(error);
-    //         res.send({
-    //             placeOrderSuccess: false,
-    //             placeOrderMessage: "Error in placing order"
-    //         })
-    //     });
 });
 
 router.post('/order/get', function (req, res) {
@@ -183,17 +175,6 @@ router.post('/menu_item/get', function (req, res) {
             res.send(result);
         }
     });
-
-    // MenuItem.find({owner_id: req.body.owner_id})
-    //     .then((menu_items) => {
-    //         console.log("menu_items");
-    //         console.log(menu_items);
-    //         res.send(menu_items)
-    //     })
-    //     .catch(() => {
-    //         console.log("Error in getByOwnerMongo")
-    //     })
-
 });
 
 router.post('/menu_item/search', function (req, res) {
@@ -210,41 +191,6 @@ router.post('/menu_item/search', function (req, res) {
             res.send(result);
         }
     });
-
-    // MenuItem.find({name: {$regex: req.body.searchTerm, $options: 'i'}})
-    //     .then((menu_items) => {
-    //         console.log("menu_items");
-    //         console.log(menu_items);
-    //
-    //         const owner_ids = menu_items.map(menu_item => menu_item.owner_id);
-    //
-    //         Owner.find({_id: {$in: owner_ids}})
-    //             .then((restaurants) => {
-    //                 console.log("restaurants");
-    //                 console.log(restaurants);
-    //                 res.send(restaurants)
-    //             })
-    //     })
-    //     .catch(() => {
-    //         console.log("Error in getByOwnerMongo")
-    //     })
-
-});
-
-router.post('/getByBuyer', function (req, res) {
-    console.log("req.body");
-    console.log(req.body);
-
-    Order.find({buyer_id: req.body.userId})
-        .then((orders) => {
-            console.log("orders");
-            console.log(orders);
-
-            res.send(orders)
-        })
-        .catch(() => {
-            console.log("Error in getByOwnerMongo")
-        })
 });
 
 router.post('/get/byBuyer', function (req, res) {
@@ -261,40 +207,17 @@ router.post('/get/byBuyer', function (req, res) {
             res.send(result);
         }
     });
-
-    //     Order.find({buyer_id: req.body.userId})
-//         .then((orders) => {
-//             console.log("orders");
-//             console.log(orders);
-//             res.send(orders)
-//         })
-//         .catch(() => {
-//             console.log("Error in getByOwnerMongo")
-//         })
 });
 
-// router.post('/getByOwnerMongo', function (req, res) {
-//     console.log("req.body");
-//     console.log(req.body);
-//
-//     Order.find({owner_id: req.body.userId})
-//         .then((orders) => {
-//             res.send(orders)
-//         })
-//         .catch(() => {
-//             console.log("Error in getByOwnerMongo")
-//         })
-// });
-
-router.post('/getByOwnerMongo', function (req, res) {
+router.post('/getByOwner', function (req, res) {
     console.log("req.body");
     console.log(req.body);
 
-    kafka.make_request('orders', {"path":"getByOwnerMongo", "body":req.body}, function(err,result) {
+    kafka.make_request('order', {"path":"getByOwner", "body":req.body}, function(err,result) {
         console.log('in result');
         console.log(result);
 
-        if (err){
+        if (err) {
             console.log(err);
             console.log("Answer not found");
             res.status(400).json({ responseMessage: 'Answer not found' });
@@ -335,25 +258,6 @@ router.post('/updateMenuItem', function (req, res) {
         } else {
             console.log('Result: ' + JSON.stringify(result));
             res.send({message: "Successfully updated menu item"})
-        }
-    });
-});
-
-router.post('/getByOwner', function (req, res) {
-    console.log("Inside getByOwner");
-    console.log("req.body");
-    console.log(req.body);
-
-    const query = queryMap.get(req.body.queryName);
-    console.log("query: " + query);
-
-    pool.query(query, req.body.arguments, (err, result) => {
-        if (err) {
-            console.log(err);
-            res.send(err);
-        } else {
-            console.log('Result: ' + JSON.stringify(result));
-            res.send(result)
         }
     });
 });

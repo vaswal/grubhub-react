@@ -92,22 +92,26 @@ class Orders extends Component {
 
     makeOrderStatusPreparing(cell) {
         console.log("Inside makeOrderStatusPreparing");
-        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Preparing"});
+        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Preparing", owner_id: cell.owner_id});
     }
 
     makeOrderStatusReady(cell) {
         console.log("Inside makeOrderStatusPreparing");
-        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Ready"});
+        console.log("cell");
+        console.log(cell);
+        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Ready", owner_id: cell.owner_id});
     }
 
     makeOrderStatusDelivered(cell) {
         console.log("Inside makeOrderStatusPreparing");
-        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Delivered"});
+        console.log("cell");
+        console.log(cell);
+        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Delivered", owner_id: cell.owner_id});
     }
 
     cancelOrder(cell) {
         console.log("Inside canelOrder");
-        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Cancel"});
+        this.props.changeOrderStatus({_id: cell.orderId, newStatus: "Cancel", owner_id: cell.owner_id});
     }
 
     handleSelect(key) {
@@ -128,7 +132,7 @@ class Orders extends Component {
     preparingOrdersTable() {
         console.log("Inside preparingOrdersTable");
         return (
-            <BootstrapTable keyField='id'
+            <BootstrapTable keyField='orderId'
                             data={this.props.preparingOrders}
                             columns={this.state.preparingColumns}
             />
@@ -138,7 +142,7 @@ class Orders extends Component {
     readyOrdersTable() {
         console.log("Inside new orders");
         return (
-            <BootstrapTable keyField='id'
+            <BootstrapTable keyField='orderId'
                             data={this.props.readyOrders}
                             columns={this.state.readyColumns}
             />
@@ -148,7 +152,7 @@ class Orders extends Component {
     deliveredOrdersTable() {
         console.log("Inside new orders");
         return (
-            <BootstrapTable keyField='id'
+            <BootstrapTable keyField='orderId'
                             data={this.props.deliveredOrders}
                             columns={this.state.basicColumns}
             />
@@ -158,7 +162,7 @@ class Orders extends Component {
     canceledOrdersTable() {
         console.log("Inside new orders");
         return (
-            <BootstrapTable keyField='id'
+            <BootstrapTable keyField='orderId'
                             data={this.props.canceledOrders}
                             columns={this.state.basicColumns}
             />

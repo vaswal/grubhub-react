@@ -13,7 +13,7 @@ export function getOrders(payload) {
 
     return (dispatch) => {
         console.log("Making rest call")
-        axios.post(`http://${HOSTNMAE}:3001/orders/getByOwnerMongo`, payload)
+        axios.post(`http://${HOSTNMAE}:3001/orders/getByOwner`, payload)
             .then((response) => dispatch(getOrdersUpdate(response.data)))
     }
 }
@@ -60,6 +60,7 @@ export function changeOrderStatus(payload) {
     const mongoPayload = {}
     mongoPayload._id = payload._id;
     mongoPayload.status = payload.newStatus;
+    mongoPayload.owner_id = payload.owner_id;
 
     return (dispatch) => {
         axios.post(`http://${HOSTNMAE}:3001/orders/order/update`, mongoPayload)

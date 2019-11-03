@@ -43,10 +43,10 @@ class HomeOwner extends Component {
             const payload = {};
             payload.queryName = "GET_RESTAURANT_NAME";
             payload.arguments = [localStorage.getItem('userId')];
-            axios.post(`http://${HOSTNMAE}:3001/profile/getByQuery`, payload)
-                .then((response) => {
-                    //this.setState({restaurantName: response.data[0].restaurantname});
-                });
+            // axios.post(`http://${HOSTNMAE}:3001/profile/getByQuery`, payload)
+            //     .then((response) => {
+            //         //this.setState({restaurantName: response.data[0].restaurantname});
+            //     });
         }
     }
 

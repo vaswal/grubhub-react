@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../../styles/Profile.css';
 import logo from '../../images/grubhub.svg';
-import profileImage from '../../images/blankProfile.png';
+import profileImage from '../../images/grubhub/blankProfile.png';
 import {connect} from "react-redux";
 import cookie from 'react-cookies';
 import uuid from "uuid";

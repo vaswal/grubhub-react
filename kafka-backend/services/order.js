@@ -37,8 +37,56 @@ exports.followService = function followService(msg, callback) {
             orderAdd(msg.body, callback);
             break;
 
+        case "getByOwner":
+            getByOwner(msg.body, callback);
+            break;
+
+        case "order/update":
+            orderUpdate(msg.body, callback);
+            break;
+
+        case "section/delete":
+            sectionDelete(msg.body, callback);
+            break;
+
     }
 };
+
+function sectionDelete(msg, callback) {
+    const section = Section(req.body);
+
+    return section.delete()
+        .then(() => {
+            res.send("Deleted section")
+        })
+        .catch(res.send("Error in deleting section"));
+
+}
+
+function orderUpdate(msg, callback) {
+    const order = Order(msg);
+
+    Order.findOneAndUpdate({_id: order._id}, order, {upsert: true})
+    .then(() => {
+        Order.find({owner_id: order.owner_id})
+            .then((orders) => {
+                callback(null, orders);
+            })
+            .catch(() => {
+                console.log("Error in getByOwnerMongo")
+            })
+    });
+}
+
+function getByOwner(msg, callback) {
+    Order.find({owner_id: msg.userId})
+        .then((orders) => {
+            callback(null, orders);
+        })
+        .catch(() => {
+            console.log("Error in getByOwnerMongo")
+        })
+}
 
 function orderAdd(msg, callback) {
     console.log("orderAdd req");
