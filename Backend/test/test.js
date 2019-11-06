@@ -8,8 +8,8 @@ const expect = chai.expect;
 describe('post /access/login', () => {
     it("Should check credentials and return 200 status code and successful signin message", function(done) {
         chai.request('http://127.0.0.1:3001')
-            .post('/access/login')
-            .send({"emailId": "q", "password": "q", "userType": "buyer"})
+            .post('/access/loginkafka')
+            .send({"user": {"emailId": "Alice", "password": "Alice", "userType": "owner"}})
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 expect(res.body.signinMessage).to.eq("Successful Login")
