@@ -4,7 +4,7 @@ import '../../styles/Navbar.css';
 import axios from 'axios';
 import BootstrapTable from "react-bootstrap-table-next";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {HOSTNMAE} from "../../components/Constants/Constants";
+import {HOSTNAME} from "../../components/Constants/Constants";
 
 //axios.defaults.withCredentials = true;
 
@@ -81,7 +81,7 @@ class PastOrders extends Component {
 
     getOrders(payload) {
         console.log("Inside getOrders");
-        axios.post(`http://${HOSTNMAE}:3001/orders/getByOwner`, payload)
+        axios.post(`http://${HOSTNAME}:3001/orders/getByOwner`, payload)
             .then((response) => {
                 this.setState({
                     upcomingOrders: this.getOrderBasedOnStatus(response, "Delivered", "Cancel")

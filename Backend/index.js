@@ -38,9 +38,9 @@ app.use(session({
     duration            : 60 * 60 * 1000,    // Overall duration of Session : 30 minutes : 1800 seconds
     activeDuration      :  5 * 60 * 1000
 }));
-//
+
 // app.use(function(req, res, next) {
-//     res.setHeader('Access-Control-Allow-Origin', 'http://18.237.90.21:3000');
+//     res.setHeader('Access-Control-Allow-Origin', 'http://54.149.48.114:3000');
 //     res.setHeader('Access-Control-Allow-Credentials', 'true');
 //     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
 //     res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
@@ -68,7 +68,7 @@ const orderRoutes = require('./src/routes/Orders');
 const chatRoutes = require('./src/routes/Chat');
 
 //use cors to allow cross origin resource sharing
-//app.use(cors({ origin: 'http://18.237.90.21:3000', credentials: true }));
+//app.use(cors({ origin: 'http://54.149.48.114:3000', credentials: true }));
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 app.use(bodyParser.json({ limit: "50MB" }));
@@ -79,7 +79,7 @@ app.use(passport.session());
 
 //mongoose.connect('mongodb://localhost:27017/grubhub')
 mongoose.connect("mongodb+srv://root:MyPasswordIsStrong123@mongocluster-nhhlj.mongodb.net/grubhub",
-    {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
+    {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, poolSize: 100})
     .then(() =>  console.log('Connection succesful'))
     .catch((err) => console.error(err));
 

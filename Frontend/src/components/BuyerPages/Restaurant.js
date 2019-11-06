@@ -4,7 +4,7 @@ import "../../styles/Menu.css"
 import axios from 'axios';
 import {connect} from "react-redux";
 import {Redirect} from 'react-router';
-import {HOSTNMAE} from "../../components/Constants/Constants";
+import {HOSTNAME} from "../../components/Constants/Constants";
 import {getMenuItems, onClickSection, pageChanged, placeOrder} from "../../js/actions/restaurantActions";
 
 //axios.defaults.withCredentials = true;
@@ -176,7 +176,7 @@ class Restaurant extends Component {
             const payload = {};
             payload.buyerId = buyerId;
 
-            axios.post(`http://${HOSTNMAE}:3001/profile/get`, payload)
+            axios.post(`http://${HOSTNAME}:3001/profile/get`, payload)
                 .then((response) => {
                     console.log("profile/get");
                     console.log(response.data);
@@ -263,7 +263,6 @@ class Restaurant extends Component {
         console.log(this.props.pageItems)
 
         const {active, todosPerPage} = this.props;
-
 
         // Logic for displaying todos
         const indexOfLastTodo = active * todosPerPage;

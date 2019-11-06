@@ -3,7 +3,6 @@ import {Tab, Tabs} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import '../../styles/Orders.css';
 import {Redirect} from 'react-router';
-import axios from 'axios';
 import {connect} from "react-redux";
 import {changeOrderStatus, getOrders} from "../../js/actions/ownerActions";
 

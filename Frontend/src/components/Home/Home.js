@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import logo from "../../images/grubhub.svg";
 import '../../styles/Navbar.css';
@@ -11,10 +12,10 @@ class Navbar extends Component {
     render() {
         let redirectVar = null;
 
-        // if (localStorage.getItem('userType') !== null) {
-        //     redirectVar = (localStorage.getItem('userType') === "buyer") ? <Redirect to="/homeBuyer"/> :
-        //         <Redirect to="/homeOwner/orders/"/>
-        // }
+        if (localStorage.getItem('userType') !== null) {
+            redirectVar = (localStorage.getItem('userType') === "buyer") ? <Redirect to="/homeBuyer"/> :
+                <Redirect to="/homeOwner/orders/"/>
+        }
 
         const divStyle = {
             position: "absolute",
@@ -32,7 +33,7 @@ class Navbar extends Component {
 
         return (
             <div>
-                {/*{redirectVar}*/}
+                {redirectVar}
                 <div className="account-logo-container">
                     <img className="quora-logo-account" src={logo} alt="Quora"/>
                 </div>

@@ -1,9 +1,9 @@
-var connection =  new require('./kafka/Connection');
+var connection = new require('./kafka/Connection');
 const mongoose = require('mongoose');
 
 mongoose.connect("mongodb+srv://root:MyPasswordIsStrong123@mongocluster-nhhlj.mongodb.net/grubhub",
     {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
-    .then(() =>  console.log('Connection succesful'))
+    .then(() => console.log('Connection succesful'))
     .catch((err) => console.error(err));
 
 
@@ -19,7 +19,7 @@ var chat = require('./services/chat.js');
 
 //
 
-function handleTopicRequest(topic_name, fname){
+function handleTopicRequest(topic_name, fname) {
     //var topic_name = 'root_topic';
     var consumer = connection.getConsumer(topic_name);
     var producer = connection.getProducer();
@@ -30,7 +30,7 @@ function handleTopicRequest(topic_name, fname){
     });
 
     consumer.on('message', function (message) {
-        console.log('message received for ' + topic_name +" ", fname);
+        console.log('message received for ' + topic_name + " ", fname);
         console.log('message.value ')
         console.log(JSON.stringify(message.value));
         var data = JSON.parse(message.value);
@@ -59,7 +59,7 @@ function handleTopicRequest(topic_name, fname){
                 break;
             case 'post_book':
                 console.log('topic_name = post_book ')
-                fname.handle_request(data.data, function(err,res){
+                fname.handle_request(data.data, function (err, res) {
                     response(data, res, producer);
                     return;
                 });
@@ -92,4 +92,4 @@ function response(data, res, producer) {
 handleTopicRequest("chat", chat)
 handleTopicRequest("access", account)
 handleTopicRequest("order", order)
-handleTopicRequest("post_book",Books)
+handleTopicRequest("post_book", Books)

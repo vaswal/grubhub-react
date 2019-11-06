@@ -26,22 +26,21 @@ exports.followService = function followService(msg, callback) {
 };
 
 
-
 function messageAdd(msg, callback) {
     console.log("orderAdd req");
     console.log(msg);
 
     Chat.updateOne(
-    {_id: msg.chat_id},
-    {$push: {messages: msg.message}})
-    .then(() => {
-        Chat.find({buyer_id: msg.buyer_id})
-            .then((chatResult) => {
-                console.log("chatResult /message/add");
-                console.log(chatResult);
-                callback(null, chatResult);
-            })
-    });
+        {_id: msg.chat_id},
+        {$push: {messages: msg.message}})
+        .then(() => {
+            Chat.find({buyer_id: msg.buyer_id})
+                .then((chatResult) => {
+                    console.log("chatResult /message/add");
+                    console.log(chatResult);
+                    callback(null, chatResult);
+                })
+        });
 }
 
 function get(msg, callback) {

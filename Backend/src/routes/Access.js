@@ -17,21 +17,37 @@ router.post('/savemongo', auth.optional, (req, res, next) => {
     console.log("save req");
     console.log(req.body);
 
-    const {body: {user}} = req;
+    kafka.make_request('access', {"path": "signup", "body": req.body}, function (err, result) {
+        console.log('in result');
+        console.log(result);
+        if (err) {
+            res.send({
+                signupSuccess: false,
+                signupMessage: "Sign In Failed"
+            })
+        } else {
+            res.send({
+                signupSuccess: true,
+                signupMessage: "Successful SignUp"
+            });
+        }
+    });
 
-    console.log("save user");
-    console.log(user);
-
-    const finalUser = ("buyer" === user.userType ? new Buyer(user) : new Owner(user));
-
-    finalUser.setPassword(user.password);
-    finalUser.userType = user.userType;
-
-    console.log("finalUser");
-    console.log(finalUser.toAuthJSON());
-
-    return finalUser.save()
-        .then(() => res.json(finalUser.toAuthJSON()));
+    // const {body: {user}} = req;
+    //
+    // console.log("save user");
+    // console.log(user);
+    //
+    // const finalUser = ("buyer" === user.userType ? new Buyer(user) : new Owner(user));
+    //
+    // finalUser.setPassword(user.password);
+    // finalUser.userType = user.userType;
+    //
+    // console.log("finalUser");
+    // console.log(finalUser.toAuthJSON());
+    //
+    // return finalUser.save()
+    //     .then(() => res.json(finalUser.toAuthJSON()));
 });
 
 //Iter 3
@@ -76,13 +92,13 @@ router.post('/loginkafka', auth.optional, function (req, res) {
     console.log("loginkafka req");
     console.log(req.body);
 
-    kafka.make_request('access', {"path":"signin", "body":req.body}, function(err,result) {
+    kafka.make_request('access', {"path": "signin", "body": req.body}, function (err, result) {
         console.log('in result');
         console.log(result);
-        if (err){
+        if (err) {
             res.send({
-                signinSuccess:false,
-                signinMessage:"Sign In Failed"
+                signinSuccess: false,
+                signinMessage: "Sign In Failed"
             })
         } else {
             res.send(result);

@@ -23,11 +23,37 @@ exports.followService = function followService(msg, callback) {
         case "signin":
             signin(msg.body, callback);
             break;
+
+        case "signup":
+            signup(msg.body, callback);
+            break;
     }
 };
 
 function next() {
     console.log(arguments)
+}
+
+function signup(msg, callback) {
+    console.log("orderAdd req");
+    console.log(msg);
+
+    // const {body: {user}} = msg;
+    const user = msg.user;
+
+    console.log("save user");
+    console.log(user);
+
+    const finalUser = ("buyer" === user.userType ? new Buyer(user) : new Owner(user));
+
+    finalUser.setPassword(user.password);
+    finalUser.userType = user.userType;
+
+    console.log("finalUser");
+    console.log(finalUser.toAuthJSON());
+
+    return finalUser.save()
+        .then(() => callback(null, finalUser.toAuthJSON()));
 }
 
 function signin(msg, callback) {
@@ -100,7 +126,7 @@ function signinInner(msg, callback, next) {
 
 function selectedTopics(msg, callback) {
 
-    users.findOneAndUpdate({ _id: msg.body.userid }, { $push: { topics_followed: { $each: msg.body.topics } } }, function (err, result) {
+    users.findOneAndUpdate({_id: msg.body.userid}, {$push: {topics_followed: {$each: msg.body.topics}}}, function (err, result) {
         if (err) {
             console.log(err)
             callback(null, {
@@ -111,9 +137,9 @@ function selectedTopics(msg, callback) {
             })
         } else {
             var criteria = {
-                name: { $in: msg.body.topics }
+                name: {$in: msg.body.topics}
             };
-            topics.updateMany(criteria, { $inc: { num_of_followers: 1 } }
+            topics.updateMany(criteria, {$inc: {num_of_followers: 1}}
                 , function (err, result) {
                     if (err) {
                         console.log(err)

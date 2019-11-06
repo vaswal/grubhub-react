@@ -1,6 +1,6 @@
 import {GET_PROFILE_BUYER, UPDATE_PROFILE_BUYER} from "../constants/action-types";
 import axios from 'axios';
-import {HOSTNMAE} from "../../components/Constants/Constants";
+import {HOSTNAME} from "../../components/Constants/Constants";
 
 export function getProfileImageAction(payload) {
     console.log("Dispatching getProfileImageAction");
@@ -26,7 +26,7 @@ export function updateProfileAction(payload) {
     return (dispatch) => {
         console.log("Inside getProfileAction dispatch");
         //axios.defaults.withCredentials = true;
-        axios.post(`http://${HOSTNMAE}:3001/profile/update`, payload)
+        axios.post(`http://${HOSTNAME}:3001/profile/update`, payload)
             .then((response) => {
                 console.log("response.data");
                 console.log(response.data);
@@ -42,7 +42,7 @@ export function getProfileAction(payload) {
     return (dispatch) => {
         console.log("Inside getProfileAction dispatch");
         //axios.defaults.withCredentials = true;
-        axios.post(`http://${HOSTNMAE}:3001/profile/get`, payload)
+        axios.post(`http://${HOSTNAME}:3001/profile/get`, payload)
             .then((response) => {
                 console.log("response.data");
                 console.log(response.data[0]);

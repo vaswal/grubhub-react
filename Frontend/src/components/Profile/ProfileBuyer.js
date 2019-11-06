@@ -8,7 +8,7 @@ import uuid from "uuid";
 import {Redirect} from 'react-router';
 import {getProfileAction, updateProfileAction} from "../../js/actions/profileActions";
 import axios from 'axios';
-import {HOSTNMAE} from "../../components/Constants/Constants";
+import {HOSTNAME} from "../../components/Constants/Constants";
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
@@ -81,7 +81,7 @@ class ConnectedBuyerProfile extends Component {
         payload.queryName = "GET_BUYER_IMAGE";
         payload.arguments = [userId];
 
-        axios.post(`http://${HOSTNMAE}:3001/profile/getImage`, payload)
+        axios.post(`http://${HOSTNAME}:3001/profile/getImage`, payload)
             .then((response) => {
                 if (response !== null) {
                     console.log("getProfileImage");
@@ -216,7 +216,7 @@ class ConnectedBuyerProfile extends Component {
         data.append('userId', this.props.userId);
         data.append('queryName', "INSERT_BUYER_IMAGE");
 
-        axios.post(`http://${HOSTNMAE}:3001/profile/image`, data, {})
+        axios.post(`http://${HOSTNAME}:3001/profile/image`, data, {})
             .then(res => { // then print response status
                 console.log(res.statusText)
             })

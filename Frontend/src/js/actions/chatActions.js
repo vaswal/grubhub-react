@@ -1,5 +1,5 @@
 import {GET_CHAT, SEND_MESSAGE} from "../constants/action-types";
-import {HOSTNMAE} from "../../components/Constants/Constants";
+import {HOSTNAME} from "../../components/Constants/Constants";
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
@@ -8,7 +8,7 @@ axios.defaults.withCredentials = true;
 
 export function getChats(payload) {
     return (dispatch) => {
-        axios.post(`http://${HOSTNMAE}:3001/chats/get`, payload)
+        axios.post(`http://${HOSTNAME}:3001/chats/get`, payload)
             .then((response) => dispatch(getChatsUpdate(response.data)))
     }
 }
@@ -22,7 +22,7 @@ const getChatsUpdate = (returnedData) => {
 
 export function sendMessage(payload) {
     return (dispatch) => {
-        axios.post(`http://${HOSTNMAE}:3001/chats/message/add`, payload)
+        axios.post(`http://${HOSTNAME}:3001/chats/message/add`, payload)
             .then((response) => dispatch(sendMessageUpdate(response.data)))
     }
 }

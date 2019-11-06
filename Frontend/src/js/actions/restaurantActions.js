@@ -9,7 +9,7 @@ import {
     PLACE_ORDER_ERROR,
     SEARCH_ITEM
 } from "../constants/action-types";
-import {HOSTNMAE} from "../../components/Constants/Constants";
+import {HOSTNAME} from "../../components/Constants/Constants";
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
@@ -28,7 +28,7 @@ export function setFilteredRestaurants(payload) {
 
 export function searchItem(payload) {
     return (dispatch) => {
-        axios.post(`http://${HOSTNMAE}:3001/orders/menu_item/search`, payload)
+        axios.post(`http://${HOSTNAME}:3001/orders/menu_item/search`, payload)
             .then((response) => dispatch(searchItemUpdate(response.data)))
     }
 }
@@ -38,7 +38,7 @@ export function getOrdersByStatus(payload) {
     console.log("getOrdersByStatus ");
 
     return (dispatch) => {
-        axios.post(`http://${HOSTNMAE}:3001/orders/get/byBuyer`, payload)
+        axios.post(`http://${HOSTNAME}:3001/orders/get/byBuyer`, payload)
             .then((response) => {
                 const responseEnriched = payload;
                 responseEnriched.data = response.data
@@ -78,7 +78,7 @@ export function placeOrder(payload) {
     return (dispatch) => {
         console.log("Inside placeOrder");
 
-        axios.post(`http://${HOSTNMAE}:3001/orders/order/add`, payload)
+        axios.post(`http://${HOSTNAME}:3001/orders/order/add`, payload)
             .then((response) => dispatch(placeOrderUpdate(response.data)))
             .catch((error) => dispatch(placeOrderError(error)));
     }
@@ -89,7 +89,7 @@ export function getMenuItems(payload) {
     console.log(payload)
 
     return (dispatch) => {
-        axios.post(`http://${HOSTNMAE}:3001/orders/menu_item/get`, payload)
+        axios.post(`http://${HOSTNAME}:3001/orders/menu_item/get`, payload)
             .then((response) => dispatch(getMenuItemsUpdate(response.data)));
     }
 }

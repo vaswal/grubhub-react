@@ -6,7 +6,6 @@ import Orders from '../OwnerPages/Orders';
 import Menu from '../OwnerPages/Menu';
 import ProfileOwner from '../Profile/ProfileOwner';
 import SignOut from '../Create/SignOut';
-import {HOSTNMAE} from "../../components/Constants/Constants";
 
 import {Link, NavLink, Route} from "react-router-dom";
 import {Nav, Navbar} from "react-bootstrap";

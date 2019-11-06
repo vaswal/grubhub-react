@@ -70,16 +70,16 @@ router.post('/get', auth.optional, (req, res) => {
     console.log("req.body");
     console.log(req.body);
 
-    kafka.make_request('chat', {"path":"get", "body": req.body}, function(err,result) {
-    console.log('in result');
-    console.log(result);
+    kafka.make_request('chat', {"path": "get", "body": req.body}, function (err, result) {
+        console.log('in result');
+        console.log(result);
 
-    if (err){
-        console.log("Error in getByOwnerMongo")
-    } else {
-        res.send(result);
-    }
-});
+        if (err) {
+            console.log("Error in getByOwnerMongo")
+        } else {
+            res.send(result);
+        }
+    });
 
     // const field = req.body.userType === "buyer" ? "buyer_id" : "owner_id";
     // const value = req.body.userType === "buyer" ? req.body.buyer_id : req.body.owner_id;
@@ -128,7 +128,7 @@ router.post('/message/add', auth.optional, (req, res) => {
     console.log("req.body");
     console.log(req.body);
 
-    kafka.make_request('chat', {"path":"message/add", "body": req.body}, function(err,result) {
+    kafka.make_request('chat', {"path": "message/add", "body": req.body}, function (err, result) {
         console.log('in result');
         console.log(result);
 

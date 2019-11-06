@@ -1,5 +1,5 @@
 import {SIGN_IN, SIGN_IN_BUYER, SIGN_UP, SIGN_UP_BUYER, SIGN_UP_OWNER} from "../constants/action-types";
-import {HOSTNMAE} from "../../components/Constants/Constants";
+import {HOSTNAME} from "../../components/Constants/Constants";
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
@@ -13,7 +13,7 @@ export function signInMongo(payload) {
     return (dispatch) => {
         console.log("Inside signInMongo");
 
-        axios.post(`http://${HOSTNMAE}:3001/access/loginkafka`, payload)
+        axios.post(`http://${HOSTNAME}:3001/access/loginkafka`, payload)
             .then((response) => dispatch(signIn(response.data)));
 
         // axios.post(`http://${HOSTNMAE}:3001/access/loginpassport`, payload)
@@ -28,7 +28,7 @@ export function signUpMongo(payload) {
     return (dispatch) => {
         console.log("Inside  signUpMongo");
 
-        axios.post(`http://${HOSTNMAE}:3001/access/savemongo`, payload)
+        axios.post(`http://${HOSTNAME}:3001/access/savemongo`, payload)
             .then((response) => dispatch(signUp(response.data)))
     }
 }
@@ -57,7 +57,7 @@ export function signUpOwnerAction(payload) {
 
     return (dispatch) => {
         console.log("Inside signUpOwnerAction dispatch");
-        axios.post(`http://${HOSTNMAE}:3001/access/createOwner`, payload)
+        axios.post(`http://${HOSTNAME}:3001/access/createOwner`, payload)
             .then((response) => dispatch(signUpOwnerUpdate(response.data)))
     }
 }
@@ -69,7 +69,7 @@ export function signInBuyerAction(payload) {
     return (dispatch) => {
         console.log("Inside signInBuyerAction dispatch");
 
-        axios.post(`http://${HOSTNMAE}:3001/access/loginpassport`, payload)
+        axios.post(`http://${HOSTNAME}:3001/access/loginpassport`, payload)
             .then((response) => dispatch(signInUpdate(response.data)))
     }
 }
@@ -84,7 +84,7 @@ export function signUpBuyerAction(payload) {
         // axios.post(`http://${HOSTNMAE}:3001/access/create`, payload)
         //     .then((response) => dispatch(signUpUpdate(response.data)))
 
-        axios.post(`http://${HOSTNMAE}:3001/access/save`, payload)
+        axios.post(`http://${HOSTNAME}:3001/access/save`, payload)
             .then((response) => dispatch(signUpUpdate(response.data)))
     }
 }

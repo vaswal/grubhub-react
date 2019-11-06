@@ -46,7 +46,7 @@ class ConnectedSignInBuyer extends Component {
         let redirectVar;
 
         //if (this.props.signinSuccess != null && this.props.signinSuccess && localStorage.getItem('token') !== null) {
-        if (this.props.signinSuccess != null && this.props.signinSuccess && this.props.token !== null) {
+        if (this.props.signinSuccess != null && this.props.signinSuccess && localStorage.getItem('token') !== null) {
             console.log("Signin success");
             redirectVar = (this.props.userType === "buyer") ? <Redirect to="/homeBuyer"/> : <Redirect to="/homeOwner"/>
         }

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router';
 import '../../styles/Navbar.css';
-import {Button, Card} from "react-bootstrap";
+import {Button, Card, Pagination} from "react-bootstrap";
 import {connect} from "react-redux";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Checkbox from "./Checkbox";
@@ -9,6 +9,9 @@ import {searchItem, setFilteredRestaurants} from "../../js/actions/restaurantAct
 
 function mapStateToProps(store) {
     return {
+        pageItems: store.restaurant.pageItems,
+        todosPerPage: store.restaurant.todosPerPage,
+        active: store.restaurant.active,
         restaurants: store.restaurant.restaurants,
         filteredRestaurants: store.restaurant.filteredRestaurants,
         allCuisines: store.restaurant.allCuisines,
@@ -30,7 +33,8 @@ class SearchBuyer extends Component {
             searchTerm: null,
             redirectVar: null,
             sidebarOpen: true,
-            selectedRestaurantId: null
+            selectedRestaurantId: null,
+            pageItems: []
         };
 
         this.state.checkboxes = this.props.allCuisines.reduce(
@@ -99,7 +103,18 @@ class SearchBuyer extends Component {
         console.log("createRestaurants");
         console.log(this.props.restaurants);
 
-        const allTabs = this.props.filteredRestaurants.map(restaurant => {
+        const {active, todosPerPage} = this.props;
+
+        // Logic for displaying todos
+        const indexOfLastTodo = active * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentTodos = this.props.filteredRestaurants.slice(indexOfFirstTodo, indexOfLastTodo);
+
+        console.log("this.props.filteredRestaurants");
+        console.log(this.props.filteredRestaurants);
+        console.log("createRestaurants numOfFilteredRestaurants: " + this.props.filteredRestaurants.length)
+
+        const allTabs = currentTodos.map(restaurant => {
             return (
                 <li>
                     <div className="menu">
@@ -159,10 +174,37 @@ class SearchBuyer extends Component {
         </div>;
     }
 
-    componentWillMount() {
+    createPages(numOfFilteredRestaurants, activePage) {
+        console.log("numOfFilteredRestaurants: " + numOfFilteredRestaurants)
+        const newItems = [];
+        //const currentTab = state.tabs[action.payload.index];
+        const numberOfItems = numOfFilteredRestaurants;
+        const todosPerPage = this.props.todosPerPage;
+
+        const numberOfPages = ((numberOfItems % todosPerPage) === 0) ? numberOfItems / todosPerPage : ((numberOfItems / todosPerPage) + 1)
+
+        console.log("numberOfPages")
+        console.log(numberOfPages)
+
+        for (let number = 1; number <= numberOfPages; number++) {
+            //for (let number = 1; number <= 5; number++) {
+            newItems.push(
+                <Pagination.Item key={number} active={number === activePage}>
+                    {number}
+                </Pagination.Item>,
+            );
+        }
+
+        this.setState({pageItems: newItems})
+
+        //return newItems;
+    }
+
+    componentDidMount() {
         console.log("SearchBuyer");
         console.log(this.props.location.state);
         this.createRestaurants();
+        this.createPages(this.props.filteredRestaurants.length, 1);
 
         const payload = {};
         payload.searchTerm = this.props.location.state.searchTerm;
@@ -171,6 +213,8 @@ class SearchBuyer extends Component {
     }
 
     render() {
+        console.log("this.state.pageItems")
+        console.log(this.state.pageItems)
         return (
             <div>
                 {this.state.redirectVar != null && <Redirect to={{
@@ -179,6 +223,10 @@ class SearchBuyer extends Component {
                 }}/>}
                 <h1>Search page</h1>
                 {this.createRestaurants()}
+                <div>
+                    <Pagination onClick={this.pageChanged}>{this.state.pageItems}</Pagination>
+                    <br/>
+                </div>
             </div>
         )
     }

@@ -5,13 +5,13 @@ const uuid = require("uuid");
 const passport = require('passport');
 const mongoose = require('mongoose');
 
-//require('../models/Section');
+require('../models/Section');
 require('../models/MenuItem');
 require('../models/Owner');
 require('../models/Order');
 
 const Order = mongoose.model('grubhub_order');
-// const Section = mongoose.model('menu_section');
+const Section = mongoose.model('menu_section');
 const MenuItem = mongoose.model('menu_item');
 const Owner = mongoose.model('Owner');
 
@@ -33,6 +33,10 @@ exports.followService = function followService(msg, callback) {
             menuItemGet(msg.body, callback);
             break;
 
+        case "menu_item/delete":
+            menuItemDelete(msg.body, callback);
+            break;
+
         case "order/add":
             orderAdd(msg.body, callback);
             break;
@@ -45,6 +49,10 @@ exports.followService = function followService(msg, callback) {
             orderUpdate(msg.body, callback);
             break;
 
+        case "section/add":
+            sectionAdd(msg.body, callback);
+            break;
+
         case "section/delete":
             sectionDelete(msg.body, callback);
             break;
@@ -52,14 +60,30 @@ exports.followService = function followService(msg, callback) {
     }
 };
 
+function sectionAdd(msg, callback) {
+    console.log("sectionAdd");
+    console.log("msg", msg);
+    const section = Section(msg);
+
+    return section.save()
+        .then(() => {
+            callback(null, "Saved section");
+        })
+        .catch((err) => {
+            console.log("error")
+            console.log(err)
+            callback(null, "Error in saving section")
+        });
+}
+
 function sectionDelete(msg, callback) {
-    const section = Section(req.body);
+    const section = Section(msg);
 
     return section.delete()
         .then(() => {
-            res.send("Deleted section")
+            callback(null, "Deleted section");
         })
-        .catch(res.send("Error in deleting section"));
+        .catch(callback(null, "Error in deleting section"));
 
 }
 
@@ -67,15 +91,15 @@ function orderUpdate(msg, callback) {
     const order = Order(msg);
 
     Order.findOneAndUpdate({_id: order._id}, order, {upsert: true})
-    .then(() => {
-        Order.find({owner_id: order.owner_id})
-            .then((orders) => {
-                callback(null, orders);
-            })
-            .catch(() => {
-                console.log("Error in getByOwnerMongo")
-            })
-    });
+        .then(() => {
+            Order.find({owner_id: order.owner_id})
+                .then((orders) => {
+                    callback(null, orders);
+                })
+                .catch(() => {
+                    console.log("Error in getByOwnerMongo")
+                })
+        });
 }
 
 function getByOwner(msg, callback) {
@@ -109,6 +133,22 @@ function orderAdd(msg, callback) {
                 placeOrderMessage: "Error in placing order"
             });
         });
+}
+
+
+function menuItemDelete(msg, callback) {
+    console.log("menuItemDelete req");
+    console.log(msg);
+
+    MenuItem.deleteMany({_id: msg.menu_item_id})
+        .then(() => {
+            console.log("Successfully deleted");
+            callback(null, "Successfully deleted");
+        })
+        .catch(() => {
+            console.log("Error in delete");
+            callback(null, "Could not delete");
+        })
 }
 
 function menuItemGet(msg, callback) {

@@ -3,29 +3,11 @@ import {Button} from "react-bootstrap";
 import Popup from "reactjs-popup";
 import uuid from "uuid";
 import "../../styles/Menu.css"
-import {HOSTNMAE} from "../../components/Constants/Constants";
+import {HOSTNAME} from "../../components/Constants/Constants";
 import {Redirect} from 'react-router';
 import axios from 'axios';
-import {connect} from "react-redux";
-import {deleteSection, getOrders, addSection} from "../../js/actions/ownerActions";
 
-function mapStateToProps(store) {
-    return {
-        newOrders: store.owner.newOrders,
-        preparingOrders: store.owner.preparingOrders,
-        readyOrders: store.owner.readyOrders,
-        deliveredOrders: store.owner.deliveredOrders,
-        canceledOrders: store.owner.canceledOrders
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getOrders: (payload) => dispatch(getOrders(payload)),
-        deleteSection: (payload) => dispatch(deleteSection(payload)),
-        addSection: (payload) => dispatch(addSection(payload))
-    };
-}
+axios.defaults.withCredentials = true;
 
 class Menu extends Component {
     constructor(props) {
@@ -127,7 +109,7 @@ class Menu extends Component {
     };
 
     handleAddTab = () => {
-        const {tabs} = this.props;
+        const {tabs} = this.state;
 
         const newTabObject = {
             id: uuid(),
@@ -135,62 +117,40 @@ class Menu extends Component {
             content: ``
         };
 
-        const payload = {};
-        payload.tabs = [...tabs, newTabObject];
-        payload.currentTab = newTabObject;
-        payload.editMode = false;
-        payload.editTabNameMode = false;
-
-        this.props.addSection(payload);
-
-        // const {tabs} = this.state;
-        //
-        // const newTabObject = {
-        //     id: uuid(),
-        //     name: `Section ${tabs.length + 1}`,
-        //     content: ``
-        // };
-
-        // this.setState({
-        //     tabs: [...tabs, newTabObject],
-        //     currentTab: newTabObject,
-        //     editMode: false,
-        //     editTabNameMode: false
-        // });
+        this.setState({
+            tabs: [...tabs, newTabObject],
+            currentTab: newTabObject,
+            editMode: false,
+            editTabNameMode: false
+        });
     };
 
     handleDeleteTab = tabToDelete => {
+        const {tabs} = this.state;
+        const tabToDeleteIndex = tabs.findIndex(tab => tab.id === tabToDelete.id);
+
+        const updatedTabs = tabs.filter((tab, index) => {
+            return index !== tabToDeleteIndex;
+        });
+
+        const previousTab =
+            tabs[tabToDeleteIndex - 1] || tabs[tabToDeleteIndex + 1] || {};
+
+        this.setState({
+            tabs: updatedTabs,
+            editMode: false,
+            editTabNameMode: false,
+            currentTab: previousTab
+        });
+
         const payload = {};
-        payload.section = this.state.currentTab.name;
-        payload.userId = localStorage.getItem('_id');
+        payload.queryName = "DELETE_SECTION";
+        payload.arguments = [this.state.currentTab.name, localStorage.getItem('userId')];
 
-        this.props.deleteSection(payload);
+        axios.post(`http://${HOSTNAME}:3001/orders/update`, payload)
+            .then((response) => {
 
-        // const {tabs} = this.state;
-        // const tabToDeleteIndex = tabs.findIndex(tab => tab.id === tabToDelete.id);
-        //
-        // const updatedTabs = tabs.filter((tab, index) => {
-        //     return index !== tabToDeleteIndex;
-        // });
-        //
-        // const previousTab =
-        //     tabs[tabToDeleteIndex - 1] || tabs[tabToDeleteIndex + 1] || {};
-        //
-        // this.setState({
-        //     tabs: updatedTabs,
-        //     editMode: false,
-        //     editTabNameMode: false,
-        //     currentTab: previousTab
-        // });
-        //
-        // const payload = {};
-        // payload.queryName = "DELETE_SECTION";
-        // payload.arguments = [this.state.currentTab.name, localStorage.getItem('userId')];
-        //
-        // axios.post(`http://${HOSTNMAE}:3001/orders/update`, payload)
-        //     .then((response) => {
-        //
-        //     });
+            });
     };
 
     setEditMode = () => {
@@ -204,7 +164,7 @@ class Menu extends Component {
         payload.name = this.state.currentTab.name;
         payload.owner_id = localStorage.getItem('_id');
 
-        axios.post(`http://${HOSTNMAE}:3001/orders/section/add`, payload)
+        axios.post(`http://${HOSTNAME}:3001/orders/section/add`, payload)
             .then((response) => {
                 this.setState({
                     editMode: !this.state.editMode
@@ -248,10 +208,9 @@ class Menu extends Component {
             console.log(menu_item_id);
 
             const payload = {};
-            payload.queryName = "DELETE_MENU_ITEM";
-            payload.arguments = [menu_item_id];
+            payload.menu_item_id = menu_item_id;
 
-            axios.post(`http://${HOSTNMAE}:3001/orders/update`, payload)
+            axios.post(`http://${HOSTNAME}:3001/orders/menu_item/delete`, payload)
                 .then((response) => {
                     this.getMenuItems();
                 });
@@ -282,7 +241,7 @@ class Menu extends Component {
             outerPayload.itemsToBeSet = itemsToBeSet;
             outerPayload.arguments = [menu_item_id];
 
-            axios.post(`http://${HOSTNMAE}:3001/orders/updateMenuItem`, outerPayload)
+            axios.post(`http://${HOSTNAME}:3001/orders/updateMenuItem`, outerPayload)
                 .then((response) => {
                     console.log("updateMenuItem");
                     this.getMenuItems();
@@ -356,7 +315,7 @@ class Menu extends Component {
                                 <Button type="submit" variant="primary" className="menu-btn">Update</Button>
                                 <Button style={{marginLeft: "60px"}} type="button" variant="primary"
                                         className="menu-btn"
-                                        onClick={this.delete(item.menu_item_id)}>Delete</Button>
+                                        onClick={this.delete(item._id)}>Delete</Button>
                             </div>
                             <div>
                             </div>
@@ -403,7 +362,7 @@ class Menu extends Component {
         form.append('owner_id', localStorage.getItem('_id'));
         form.append('file', this.state.file, (fileName + "." + extension));
 
-        axios.post(`http://${HOSTNMAE}:3001/orders/menu_item/add`, form)
+        axios.post(`http://${HOSTNAME}:3001/orders/menu_item/add`, form)
             .then((response) => {
                 console.log("addMenuItem");
                 console.log(response);
@@ -437,7 +396,7 @@ class Menu extends Component {
         const outerPayload = {};
         outerPayload.owner_id = localStorage.getItem('_id');
 
-        axios.post(`http://${HOSTNMAE}:3001/orders/section/get`, outerPayload)
+        axios.post(`http://${HOSTNAME}:3001/orders/section/get`, outerPayload)
             .then((response) => {
                 const set = new Set();
                 console.log(response.data);
@@ -458,7 +417,7 @@ class Menu extends Component {
                 payload.owner_id = [localStorage.getItem('_id')];
 
 
-                axios.post(`http://${HOSTNMAE}:3001/orders/menu_item/get`, payload)
+                axios.post(`http://${HOSTNAME}:3001/orders/menu_item/get`, payload)
                     .then((response) => {
                         this.setState({allItems: response.data});
 
@@ -600,4 +559,4 @@ class Menu extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Menu);
+export default Menu;

@@ -1,2 +1,2 @@
-//export const HOSTNMAE = "ec2-18-237-90-21.us-west-2.compute.amazonaws.com";
-export const HOSTNMAE = "localhost";
+//export const HOSTNMAE = "ec2-34-214-17-38.us-west-2.compute.amazonaws.com";
+export const HOSTNAME = "localhost";

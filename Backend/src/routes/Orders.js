@@ -66,22 +66,25 @@ router.post('/section/get', function (req, res) {
 });
 
 router.post('/section/add', function (req, res) {
-    const section = Section(req.body);
+    kafka.make_request('order', {"path": "section/add", "body": req.body}, function (err, result) {
+        console.log('in result');
+        console.log(result);
 
-    return section.save()
-        .then(() => {
-            res.send("Saved section")
-        })
-        .catch(res.send("Error in saving section"));
+        if (err) {
+            console.log("Error in getByOwnerMongo")
+        } else {
+            res.send(result);
+        }
+    });
 });
 
 
 router.post('/section/delete', function (req, res) {
-    kafka.make_request('order', {"path":"section/delete", "body": req.body}, function(err,result) {
+    kafka.make_request('order', {"path": "section/delete", "body": req.body}, function (err, result) {
         console.log('in result');
         console.log(result);
 
-        if (err){
+        if (err) {
             console.log("Error in getByOwnerMongo")
         } else {
             res.send(result);
@@ -96,11 +99,11 @@ router.post('/order/update', function (req, res) {
     console.log("order");
     console.log(order);
 
-    kafka.make_request('order', {"path":"order/update", "body": req.body}, function(err,result) {
+    kafka.make_request('order', {"path": "order/update", "body": req.body}, function (err, result) {
         console.log('in result');
         console.log(result);
 
-        if (err){
+        if (err) {
             console.log("Error in getByOwnerMongo")
         } else {
             res.send(result);
@@ -109,11 +112,11 @@ router.post('/order/update', function (req, res) {
 });
 
 router.post('/order/add', function (req, res) {
-    kafka.make_request('order', {"path":"order/add", "body": req.body}, function(err,result) {
+    kafka.make_request('order', {"path": "order/add", "body": req.body}, function (err, result) {
         console.log('in result');
         console.log(result);
 
-        if (err){
+        if (err) {
             console.log("Error in getByOwnerMongo")
         } else {
             res.send(result);
@@ -165,11 +168,24 @@ router.post('/menu_item/add', function (req, res) {
 });
 
 router.post('/menu_item/get', function (req, res) {
-    kafka.make_request('order', {"path":"menu_item/get", "body": req.body}, function(err,result) {
+    kafka.make_request('order', {"path": "menu_item/get", "body": req.body}, function (err, result) {
         console.log('in result');
         console.log(result);
 
-        if (err){
+        if (err) {
+            console.log("Error in getByOwnerMongo")
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+router.post('/menu_item/delete', function (req, res) {
+    kafka.make_request('order', {"path": "menu_item/delete", "body": req.body}, function (err, result) {
+        console.log('menu_item/delete in result');
+        console.log(result);
+
+        if (err) {
             console.log("Error in getByOwnerMongo")
         } else {
             res.send(result);
@@ -181,11 +197,11 @@ router.post('/menu_item/search', function (req, res) {
     console.log("menu_item/search");
     console.log(req.body);
 
-    kafka.make_request('order', {"path":"menu_item/search", "body": req.body}, function(err,result) {
+    kafka.make_request('order', {"path": "menu_item/search", "body": req.body}, function (err, result) {
         console.log('in result');
         console.log(result);
 
-        if (err){
+        if (err) {
             console.log("Error in getByOwnerMongo")
         } else {
             res.send(result);
@@ -197,11 +213,11 @@ router.post('/get/byBuyer', function (req, res) {
     console.log("req.body");
     console.log(req.body);
 
-    kafka.make_request('order', {"path":"get/byBuyer", "body": req.body}, function(err,result) {
+    kafka.make_request('order', {"path": "get/byBuyer", "body": req.body}, function (err, result) {
         console.log('in result');
         console.log(result);
 
-        if (err){
+        if (err) {
             console.log("Error in getByOwnerMongo")
         } else {
             res.send(result);
@@ -213,20 +229,19 @@ router.post('/getByOwner', function (req, res) {
     console.log("req.body");
     console.log(req.body);
 
-    kafka.make_request('order', {"path":"getByOwner", "body":req.body}, function(err,result) {
+    kafka.make_request('order', {"path": "getByOwner", "body": req.body}, function (err, result) {
         console.log('in result');
         console.log(result);
 
         if (err) {
             console.log(err);
             console.log("Answer not found");
-            res.status(400).json({ responseMessage: 'Answer not found' });
+            res.status(400).json({responseMessage: 'Answer not found'});
         } else {
             res.send(result);
         }
     });
 });
-
 
 
 router.post('/update', function (req, res) {
