@@ -1,5 +1,5 @@
 import React from 'react';
-import {Pagination} from "react-bootstrap";
+import {Badge, Button, Card, Pagination} from "react-bootstrap";
 import {
     FILTER_RESTAURANTS,
     GET_MENU_ITEMS,
@@ -10,8 +10,10 @@ import {
     PAGE_CHANGED,
     PLACE_ORDER,
     PLACE_ORDER_ERROR,
-    SEARCH_ITEM
+    SEARCH_ITEM,
+    CREATE_PAGES_SEARCH, PAGE_CHANGED_SEARCH
 } from "../constants/action-types";
+import Checkbox from "../../components/BuyerPages/Checkbox";
 
 const initialState = {
     placeOrderSuccess: null,
@@ -21,10 +23,12 @@ const initialState = {
     tabs: [],
     currentTab: {},
     pageItems: [],
+    pageItemsSearch: [],
     todosPerPage: 3,
     active: 1,
     restaurants: [],
     filteredRestaurants: [],
+    restaurantDivs: [],
     allCuisines: [],
     items: [],
     selected: [],
@@ -58,8 +62,38 @@ const move = (source, destination, droppableSource, droppableDestination) => {
     return result;
 };
 
+const getOrderStatusBadge = (status) => {
+    let badge = null;
+
+    switch (status) {
+        case "New":
+            badge = <Badge style={{fontSize: 10}} variant="primary">New</Badge>
+            break;
+
+        case "Preparing":
+            badge = <Badge style={{fontSize: 10}} variant="info">Preparing</Badge>
+            break;
+
+        case "Ready":
+            badge = <Badge style={{fontSize: 10}} variant="dark">Ready</Badge>
+            break;
+
+        case "Delivered":
+            badge = <Badge style={{fontSize: 10}} variant="success">Delivered</Badge>
+            break;
+
+        case "Cancel":
+            badge = <Badge style={{fontSize: 10}} variant="danger">Cancel</Badge>
+            break;
+    }
+
+    return badge;
+}
 
 const getOrderBasedOnStatus = (data, statusSet) => {
+    console.log("getOrderBasedOnStatus")
+    console.log(data);
+
     const ordersByStatus = data.filter(order => {
             return (statusSet.has(order.status))
         }
@@ -87,7 +121,10 @@ const getOrderBasedOnStatus = (data, statusSet) => {
         displayOrder["content"] = <div>
             <img style={{width: "150px", height: "150px", margin: 0}}
                  src={require("../../images/" + displayOrder.image)}/>
-            <h4>Name: {order.customer_address}</h4>
+            <h4>Name: {order.customer_name}</h4>
+            <b>Order Status</b> - {getOrderStatusBadge(order.status)}
+            <h4>OrderId: {order._id}</h4>
+            <h4>Name: {order.items}</h4>
         </div>;
 
         displayOrders.push(displayOrder);
@@ -95,6 +132,8 @@ const getOrderBasedOnStatus = (data, statusSet) => {
 
     return displayOrders;
 }
+
+
 
 const createPages = (state, currentTab, activePage) => {
     const newItems = [];
@@ -185,14 +224,70 @@ export default function restaurantReducer(state = initialState, action) {
         });
         //this.createPages();
     } else if (action.type === SEARCH_ITEM) {
+        const allCuisinesLocal = [...new Set(action.payload.map(({cuisine}) => cuisine))];
+
         return Object.assign({}, state, {
             restaurants: action.payload,
             filteredRestaurants: action.payload,
-            allCuisines: [...new Set(action.payload.map(({cuisine}) => cuisine))]
+            allCuisines: allCuisinesLocal,
         });
     } else if (action.type === FILTER_RESTAURANTS) {
         return Object.assign({}, state, {
             filteredRestaurants: action.payload
+        });
+    }  else if (action.type === CREATE_PAGES_SEARCH) {
+        const numOfFilteredRestaurants = action.payload.numOfFilteredRestaurants;
+        const activePage = action.payload.activePage
+        console.log("CREATE_PAGES_SEARCH numOfFilteredRestaurants: " + numOfFilteredRestaurants)
+        const newItems = [];
+        //const currentTab = state.tabs[action.payload.index];
+        const numberOfItems = numOfFilteredRestaurants;
+        const todosPerPage = state.todosPerPage;
+
+        const numberOfPages = ((numberOfItems % todosPerPage) === 0) ? numberOfItems / todosPerPage : ((numberOfItems / todosPerPage) + 1)
+
+        console.log("numberOfPages")
+        console.log(numberOfPages)
+
+        for (let number = 1; number <= numberOfPages; number++) {
+            //for (let number = 1; number <= 5; number++) {
+            newItems.push(
+                <Pagination.Item key={number} active={number === activePage}>
+                    {number}
+                </Pagination.Item>,
+            );
+        }
+
+        return Object.assign({}, state, {
+            pageItemsSearch: newItems
+        });
+
+    }  else if (action.type === PAGE_CHANGED_SEARCH) {
+        const numOfFilteredRestaurants = state.filteredRestaurants.length;
+        const activePage = action.payload.activePage
+        console.log("PAGE_CHANGED_SEARCH numOfFilteredRestaurants: " + numOfFilteredRestaurants)
+        const newItems = [];
+        //const currentTab = state.tabs[action.payload.index];
+        const numberOfItems = numOfFilteredRestaurants;
+        const todosPerPage = state.todosPerPage;
+
+        const numberOfPages = ((numberOfItems % todosPerPage) === 0) ? numberOfItems / todosPerPage : ((numberOfItems / todosPerPage) + 1)
+
+        console.log("numberOfPages")
+        console.log(numberOfPages)
+
+        for (let number = 1; number <= numberOfPages; number++) {
+            //for (let number = 1; number <= 5; number++) {
+            newItems.push(
+                <Pagination.Item key={number} active={number === activePage}>
+                    {number}
+                </Pagination.Item>,
+            );
+        }
+
+        return Object.assign({}, state, {
+            activePage: activePage,
+            pageItemsSearch: newItems
         });
     } else if (action.type === GET_ORDERS_BY_STATUS) {
         if ("Upcoming" === action.payload.statusCode) {

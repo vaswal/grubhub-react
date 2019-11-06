@@ -7,7 +7,9 @@ import {
     PAGE_CHANGED,
     PLACE_ORDER,
     PLACE_ORDER_ERROR,
-    SEARCH_ITEM
+    SEARCH_ITEM,
+    CREATE_PAGES_SEARCH,
+    PAGE_CHANGED_SEARCH
 } from "../constants/action-types";
 import {HOSTNAME} from "../../components/Constants/Constants";
 import axios from 'axios';
@@ -116,13 +118,34 @@ const pageChangedUpdate = (returnedData) => {
     return {type: PAGE_CHANGED, payload: returnedData}
 }
 
+export function createPagesSearch(payload) {
+    console.log("createPagesSearch payload");
+    console.log(payload);
+
+    return (dispatch) => {dispatch(createPagesSearchUpdate(payload));}
+}
+
+const createPagesSearchUpdate = (returnedData) => {
+    return {type: CREATE_PAGES_SEARCH, payload: returnedData}
+}
+
+export function pageChangedSearch(payload) {
+    console.log("createPagesSearch payload");
+    console.log(payload);
+
+    return (dispatch) => {dispatch(pageChangedSearchUpdate(payload));}
+}
+
+const pageChangedSearchUpdate = (returnedData) => {
+    return {type: PAGE_CHANGED_SEARCH, payload: returnedData}
+}
+
 const onClickSectionUpdate = (returnedData) => {
     console.log("onClickSectionUpdate");
     console.log(returnedData);
 
     const payload = {};
     payload.index = returnedData.index;
-
 
     return {type: ON_CLICK_SECTION, payload: payload}
 }

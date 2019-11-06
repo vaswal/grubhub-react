@@ -43,7 +43,7 @@ class PastOrders extends Component {
     newOrdersTable() {
         console.log("Inside new orders");
         return (
-            <BootstrapTable keyField='id'
+            <BootstrapTable keyField='orderId'
                             data={this.state.upcomingOrders}
                             columns={this.state.columns}
             />
@@ -51,6 +51,8 @@ class PastOrders extends Component {
     }
 
     getOrderBasedOnStatus(response, status1, status2) {
+        console.log("Past order getOrderBasedOnStatus")
+        console.log(response)
         const ordersByStatus = response.data.filter(order => {
                 return (order.status === status1) || (order.status === status2)
             }
@@ -63,7 +65,7 @@ class PastOrders extends Component {
             const items = JSON.parse(order.items);
 
             displayOrder["status"] = order.status;
-            displayOrder["orderId"] = order.grubhub_order_id;
+            displayOrder["orderId"] = order._id;
             displayOrder["customerName"] = order.customer_name;
             displayOrder["customerAddress"] = order.customer_address;
             displayOrder["items"] = [];
@@ -81,7 +83,7 @@ class PastOrders extends Component {
 
     getOrders(payload) {
         console.log("Inside getOrders");
-        axios.post(`http://${HOSTNAME}:3001/orders/getByOwner`, payload)
+        axios.post(`http://${HOSTNAME}:3001/orders/get/byBuyer`, payload)
             .then((response) => {
                 this.setState({
                     upcomingOrders: this.getOrderBasedOnStatus(response, "Delivered", "Cancel")
@@ -91,9 +93,14 @@ class PastOrders extends Component {
 
     componentWillMount() {
         if (localStorage.getItem('userType') !== null) {
+            // const payload = {};
+            // payload.queryName = "GET_GRUBHUB_ORDERS_BY_BUYER";
+            // payload.arguments = [localStorage.getItem('userId')];
+
             const payload = {};
-            payload.queryName = "GET_GRUBHUB_ORDERS_BY_BUYER";
-            payload.arguments = [localStorage.getItem('userId')];
+            payload.userId = localStorage.getItem('_id');
+            payload.statusSet = new Set(["Delivered", "Cancel"]);
+            payload.statusCode = "Past";
 
             this.getOrders(payload);
         }

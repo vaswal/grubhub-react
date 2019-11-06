@@ -5,16 +5,18 @@ import {Button, Card, Pagination} from "react-bootstrap";
 import {connect} from "react-redux";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Checkbox from "./Checkbox";
-import {searchItem, setFilteredRestaurants} from "../../js/actions/restaurantActions";
+import {searchItem, setFilteredRestaurants, createPagesSearch, pageChangedSearch} from "../../js/actions/restaurantActions";
 
 function mapStateToProps(store) {
     return {
-        pageItems: store.restaurant.pageItems,
+        pageItemsSearch: store.restaurant.pageItemsSearch,
         todosPerPage: store.restaurant.todosPerPage,
         active: store.restaurant.active,
         restaurants: store.restaurant.restaurants,
         filteredRestaurants: store.restaurant.filteredRestaurants,
         allCuisines: store.restaurant.allCuisines,
+        restaurantDivs: store.restaurant.restaurantDivs,
+
     }
 }
 
@@ -22,6 +24,8 @@ function mapDispatchToProps(dispatch) {
     return {
         searchItem: (payload) => dispatch(searchItem(payload)),
         setFilteredRestaurants: (payload) => dispatch(setFilteredRestaurants(payload)),
+        createPagesSearch: (payload) => dispatch(createPagesSearch(payload)),
+        pageChangedSearch: (payload) => dispatch(pageChangedSearch(payload)),
     };
 }
 
@@ -34,7 +38,8 @@ class SearchBuyer extends Component {
             redirectVar: null,
             sidebarOpen: true,
             selectedRestaurantId: null,
-            pageItems: []
+            pageItems: [],
+            restaurantDivs: <div></div>
         };
 
         this.state.checkboxes = this.props.allCuisines.reduce(
@@ -114,7 +119,7 @@ class SearchBuyer extends Component {
         console.log(this.props.filteredRestaurants);
         console.log("createRestaurants numOfFilteredRestaurants: " + this.props.filteredRestaurants.length)
 
-        const allTabs = currentTodos.map(restaurant => {
+        const allTabs = this.props.filteredRestaurants.map(restaurant => {
             return (
                 <li>
                     <div className="menu">
@@ -172,30 +177,73 @@ class SearchBuyer extends Component {
                 <ul className="ul li">{allTabs}</ul>
             </div>
         </div>;
+        //
+        // this.setState({restaurantDivs: <div>
+        //         <div className='rowC'>
+        //             <Card style={{width: '18rem'}}>
+        //                 <Card.Body>
+        //                     <Card.Title>Filter by cuisine</Card.Title>
+        //                     <form onSubmit={this.doFilter}>
+        //                         {this.createCheckboxes()}
+        //                         <Button type="submit" variant="primary">Filter</Button>
+        //                     </form>
+        //                 </Card.Body>
+        //             </Card>
+        //
+        //             <ul className="ul li">{allTabs}</ul>
+        //         </div>
+        //     </div>})
     }
 
-    createPages(numOfFilteredRestaurants, activePage) {
-        console.log("numOfFilteredRestaurants: " + numOfFilteredRestaurants)
-        const newItems = [];
-        //const currentTab = state.tabs[action.payload.index];
-        const numberOfItems = numOfFilteredRestaurants;
-        const todosPerPage = this.props.todosPerPage;
+    pageChanged = (e) => {
+        console.log("In pageChanged");
+        console.log(e.target.text);
 
-        const numberOfPages = ((numberOfItems % todosPerPage) === 0) ? numberOfItems / todosPerPage : ((numberOfItems / todosPerPage) + 1)
+        // const newItems = createPages(state, state.currentTab, action.payload.pageNumber);
+        //
+        // return Object.assign({}, state, {
+        //     active: action.payload.pageNumber,
+        //     pageItems: newItems
+        // });
 
-        console.log("numberOfPages")
-        console.log(numberOfPages)
+        // const payload = {};
+        // payload.pageNumber = parseInt(e.target.text, 10);
+        // this.props.pageChanged(payload);
+        const payload = {};
+        payload.activePage = parseInt(e.target.text, 10);
 
-        for (let number = 1; number <= numberOfPages; number++) {
-            //for (let number = 1; number <= 5; number++) {
-            newItems.push(
-                <Pagination.Item key={number} active={number === activePage}>
-                    {number}
-                </Pagination.Item>,
-            );
-        }
+        this.props.pageChangedSearch(payload);
+        this.createRestaurants();
+    }
 
-        this.setState({pageItems: newItems})
+    createPagesSearch(numOfFilteredRestaurants, activePage) {
+        console.log("1numOfFilteredRestaurants: " + numOfFilteredRestaurants);
+        const payload = {};
+        payload.numOfFilteredRestaurants = numOfFilteredRestaurants;
+        payload.activePage = activePage;
+
+        this.props.createPagesSearch(payload);
+        // console.log("numOfFilteredRestaurants: " + numOfFilteredRestaurants)
+        // const newItems = [];
+        // //const currentTab = state.tabs[action.payload.index];
+        // const numberOfItems = numOfFilteredRestaurants;
+        // const todosPerPage = this.props.todosPerPage;
+        //
+        // const numberOfPages = ((numberOfItems % todosPerPage) === 0) ? numberOfItems / todosPerPage : ((numberOfItems / todosPerPage) + 1)
+        //
+        // console.log("numberOfPages")
+        // console.log(numberOfPages)
+        //
+        // for (let number = 1; number <= numberOfPages; number++) {
+        //     //for (let number = 1; number <= 5; number++) {
+        //     newItems.push(
+        //         <Pagination.Item key={number} active={number === activePage}>
+        //             {number}
+        //         </Pagination.Item>,
+        //     );
+        // }
+        //
+        // this.setState({pageItems: newItems})
 
         //return newItems;
     }
@@ -203,13 +251,13 @@ class SearchBuyer extends Component {
     componentDidMount() {
         console.log("SearchBuyer");
         console.log(this.props.location.state);
-        this.createRestaurants();
-        this.createPages(this.props.filteredRestaurants.length, 1);
 
         const payload = {};
         payload.searchTerm = this.props.location.state.searchTerm;
 
         this.props.searchItem(payload);
+        this.createRestaurants();
+        this.createPagesSearch(this.props.filteredRestaurants.length, 1);
     }
 
     render() {
@@ -223,8 +271,9 @@ class SearchBuyer extends Component {
                 }}/>}
                 <h1>Search page</h1>
                 {this.createRestaurants()}
+                {/*{this.props.restaurantDivs}*/}
                 <div>
-                    <Pagination onClick={this.pageChanged}>{this.state.pageItems}</Pagination>
+                    <Pagination onClick={this.pageChanged}>{this.props.pageItemsSearch}</Pagination>
                     <br/>
                 </div>
             </div>
